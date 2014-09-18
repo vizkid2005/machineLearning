@@ -1,5 +1,5 @@
 class Node:
-	def __init__(self, col = -1, leafValue = None, leftBranch = None, rightBranch = None, criteria=None):
+	def __init__(self, col = -1, leafValues = None, leftBranch = None, rightBranch = None, criteria=None):
 		'''
 		Explanation of values : 
 			col -> The column number of the feature used for split
@@ -10,9 +10,9 @@ class Node:
 		'''
 		
 		self.col = col
-		self.leafValue = leafValue
+		self.leafValues = leafValues
 		self.leftBranch = leftBranch
 		self.rightBranch = rightBranch
 		self.criteria = criteria
 
-			
+
