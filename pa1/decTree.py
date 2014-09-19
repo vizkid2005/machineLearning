@@ -7,11 +7,17 @@ from Node import Node
 IMPORTANT : DO NOT make any changes .. This is still a work in progress 
 You can see but you can not touch !!! 
 
+Things left to do : 
+1) Proper Commenting
+2) Writing predicted values vs expected calues in CSV files for various depths
+3) Removing debug code
+
+DO NOT MAKE CHANGES !!!
 '''
 
 '''
 This program knows no difference between a number or a string, It considers everything as a string. (Either a string matches the criteria or it doesn't) 
-This makes it more robust. Ultimately entropy and informatin gain depends on the probability of a certain value.
+This makes it a Binary Tree. Ultimately entropy and informatin gain depends on the probability of a certain value.
 It does not matter what the value is .. 
 I think this will work in most cases .. Lets see ... 
 '''
@@ -98,8 +104,10 @@ def createTree(subDataSet, depth=10):
 			#We then see which values are present in the column, we will choose one vlalue as criteria to split into 2 datasets
 			valuesInColumn = {}
 			for row in subDataSet:
-				valuesInColumn[row[col]]=1
 
+				#I have doubt here, Do I use the result columm to find the info gain or do I use the current col ?
+				valuesInColumn[row[col]]=1
+				#valuesInColumn[row[numberOfColumns]] = 1
 			#print "Values in col :  "+str(col)+ " are : "+str(valuesInColumn)	
 			#We are now iterating through each value in the current iteration of column to see which value serves as the best split
 			for value in valuesInColumn:
@@ -135,6 +143,11 @@ def createTree(subDataSet, depth=10):
 			# Possible loss of context in rightBranch and LeftBranch,
 			return Node(col = bestColumn, leftBranch = lBranch,rightBranch= rBranch, criteria = bestCriteria)
 
+		else:
+			print ""
+			print "No further branching possible "
+			print "Adding leaf values : "+str(valuesInColumn)
+			return Node(leafValues= countOccurenceOfClassLabel(subDataSet))	
 		#No further branching possible, create a node with all the possible leaf values	
 		'''
 		!!!! IMPORTANT !!!!
@@ -142,19 +155,20 @@ def createTree(subDataSet, depth=10):
 		The leaves should be class labels 
 		change code when back next time 
 		Signing of at 3:05 AM  9/18/2014
-		'''
-		else :
-			print ""
-			print "No further branching possible "
-			print "Adding leaf values : "+str(valuesInColumn)
-			return Node(leafValues= valuesInColumn)							
 
+		#RESOLVED
+		'''
+	else : 
+		return Node(leafValues = countOccurenceOfClassLabel(subDataSet))	
 
 '''
 Small note to self : Was wondering whether the algorithm will split the data set 2wice on the same column
 I am not keeping track of which column has been used for split, so it is possible that the same column may be used again for splitting.
 However the algorithm would have already chosen the best column based on Info gain since it is greedy. Lets see how it plays out. 
+
+#RESOLVED
 '''
+
 '''
 The method calcInfoGain return the Information Gain when passed with the current value of entropy, and dataset split on a particular.
 This used to find which is the best column to split the dataset on and subsequently decide what should the criteria be. 
@@ -176,23 +190,87 @@ def countOccurenceOfClassLabel(subDataSet):
 			countsOfLabels[row[len(row)-1]] += 1
 		else :
 			countsOfLabels[row[len(row)-1]] = 1
-
 	return countsOfLabels			
-	
+
+'''
+The method printTree takes a tree of the type Node and an indent value. It outputs the tree in a human interpretable form 
+by showing subsequent branches with indents. 
+'''	
 def printTree(tree, indent=''):
 	if tree.leafValues != None:
-		print tree.leafValues
+		print "Ended in : "+str(tree.leafValues)
 	else:
-		print indent+"Column : "+str(tree.col)+" with criteria : "+str(tree.criteria)
-		print indent+"Left Branch -> "
-		printTree(tree.leftBranch,indent="     ")
-		print indent+"Right Branch -> "
-		printTree(tree.rightBranch,indent="     ")
+		print "Column : "+str(tree.col)+" with criteria : "+str(tree.criteria)
+		print indent+"Left Branch -> ",
+		printTree(tree.leftBranch,indent="     "+indent)
+		print indent+"Right Branch -> ",
+		printTree(tree.rightBranch,indent="     "+indent)
 
-def writeResult():
+'''
+The method write result will write the result of the classifier in a CSV format.
+'''
+def writeResult(actualLabel, predictedLabel):
 	print ""
-def classifyNewSample():	
-	print ""
+
+'''
+Given a tree and a dataset, the method classifyNewSample will output the predicted classification of each row in the dataset.
+'''
+def classifyNewSample(tree, testData,depth):	
+	
+	predictionsPlusExpectedValues = []
+
+	for row in testData:
+
+		currentNode = tree
+		leaf = None
+		predictedLabel = None
+		currentPredictionPlusExpectedValues = []
+		while(leaf == None):
+			if row[currentNode.col] == currentNode.criteria: 
+				currentNode = currentNode.rightBranch
+			else:
+				currentNode = currentNode.leftBranch
+			
+			leaf = currentNode.leafValues
+
+		# Counting the occurences of each possible class label in the leaf
+		labelCount = len(leaf)
+		
+		#if there is only one label then classify as that label
+		if(labelCount == 1):
+			predictedLabel = leaf.keys()
+		#Else we count the number of occurences of each label and assign the label which has a greater number of occurences
+		else:
+			probabilityOfClassLabels = {}
+			#Counting the total number of occurences of each label
+			totalNumberOfLabels = 0
+			for key in leaf.keys():
+				totalNumberOfLabels += leaf[key]
+			
+			#Calculating and assigning the probability of each key to the dictionary probabilityOfClassLabels
+			for key in leaf.keys():
+				probabilityOfClassLabels[key] = leaf[key]/totalNumberOfLabels
+
+			maxProbability = 0.0
+			bestKey = None
+		
+			'''
+			Getting the label with Max Probability, if 2 labels are equally probable then the selection
+			depends on the order in which the keys are stored, which is generally random
+			2 runs of the program will never have keys in the same order. 
+			'''
+			for key in leaf.keys():
+				if probabilityOfClassLabels[key] > maxProbability:
+					maxProbability = probabilityOfClassLabels[key]
+					bestKey = key
+
+			predictedLabel = bestKey
+		currentPredictionPlusExpectedValues.append(predictedLabel)
+		currentPredictionPlusExpectedValues.append(row[len(row)-1])
+		predictionsPlusExpectedValues.append(currentPredictionPlusExpectedValues)
+
+	for row in predictionsPlusExpectedValues:
+		print row		
 
 '''
 The method splitData takes a dataset as input and splits it into 2 based on the criteria on the specified column and returns the resulting 2 datasets.
@@ -217,13 +295,18 @@ def main():
 	testData = readData("zoo-test.csv")
 
 	#Taking depth of tree as input
-	#treeDepth = input("Enter the depth of tree : ")
+	depth = 10
 
 	#The variable tree will be an instance of the type Node
-	tree = createTree(trainData)
+	tree = createTree(trainData,depth)
 	print "  "
 	print ""
+	print "Structure of the Tree : "
 	print ""
 	printTree(tree)
+	print ""
+	print "Predicted values vs the Expected Value"
+	classifyNewSample(tree, testData,depth)
+
 if __name__ == "__main__" : main()	
 		
