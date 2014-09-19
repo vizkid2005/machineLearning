@@ -1,0 +1,31 @@
+Assignment Title: Programming Assignment 1 - Implement a fixed depth decision tree.
+
+Team Details:
+1) Name : Rahul pasunuri
+   Email: rahupasu@indiana.edu
+   
+2) Name : Huzefa Dargahwala
+   Email: hydargah@indiana.edu
+   
+Introduction:
+This project implements a fixed depth decision tree algorithm using Python (2.7).  The algorithm uses "Information gain" as the deciding factor for splitting a node. And the combo of feature and value, which gives us the best "Information gain" is used for the split at a particular node. This algorithm does binary splits using the one vs rest approach for every possible feature. 
+
+
+Limitations of the project:
+1) The algorithm only supports binary splits. 
+
+
+Running Application:
+   
+
+Project's File structure:
+
+
+Contents of files:
+
+
+
+
+References:
+1) Programming Collective Intelligence, Building Smart Web 2.0 Applications, O'REILLY, First Edition, by Toby Segaran.
+2) Machine Learning, McGraw Hill Education Private Limited, by Tom M. Mitchell, 
