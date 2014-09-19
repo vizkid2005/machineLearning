@@ -209,13 +209,19 @@ def printTree(tree, indent=''):
 '''
 The method write result will write the result of the classifier in a CSV format.
 '''
-def writeResult(actualLabel, predictedLabel):
-	print ""
+def writeResult(predictionsPlusExpectedValues,depth="",fileName="predictionsWithDepth"):
+	with open(fileName+str(depth)+".csv",'wb') as f:
+		csvWriter = csv.writer(f)
+
+		for row in predictionsPlusExpectedValues:
+			csvWriter.writerow(row)
+
+		f.close()	
 
 '''
 Given a tree and a dataset, the method classifyNewSample will output the predicted classification of each row in the dataset.
 '''
-def classifyNewSample(tree, testData,depth):	
+def classifyNewSample(tree, testData,depth,fileName):	
 	
 	predictionsPlusExpectedValues = []
 
@@ -225,20 +231,27 @@ def classifyNewSample(tree, testData,depth):
 		leaf = None
 		predictedLabel = None
 		currentPredictionPlusExpectedValues = []
-		while(leaf == None):
-			if row[currentNode.col] == currentNode.criteria: 
-				currentNode = currentNode.rightBranch
-			else:
-				currentNode = currentNode.leftBranch
-			
-			leaf = currentNode.leafValues
+
+		#Handling the Special case of depth = 0 
+		if(depth == 0):
+			leaf = tree.leafValues
+		else:	
+			while(leaf == None):
+				if row[currentNode.col] == currentNode.criteria: 
+					currentNode = currentNode.rightBranch
+				else:
+					currentNode = currentNode.leftBranch
+				
+				leaf = currentNode.leafValues
 
 		# Counting the occurences of each possible class label in the leaf
 		labelCount = len(leaf)
-		
+		print "Count of labels : "+str(labelCount)
+
 		#if there is only one label then classify as that label
 		if(labelCount == 1):
 			predictedLabel = leaf.keys()
+		
 		#Else we count the number of occurences of each label and assign the label which has a greater number of occurences
 		else:
 			probabilityOfClassLabels = {}
@@ -247,13 +260,16 @@ def classifyNewSample(tree, testData,depth):
 			for key in leaf.keys():
 				totalNumberOfLabels += leaf[key]
 			
+			print "Total number of occurences : "+str(totalNumberOfLabels)
+
 			#Calculating and assigning the probability of each key to the dictionary probabilityOfClassLabels
 			for key in leaf.keys():
-				probabilityOfClassLabels[key] = leaf[key]/totalNumberOfLabels
+				probabilityOfClassLabels[key] = float(leaf[key])/totalNumberOfLabels
 
 			maxProbability = 0.0
 			bestKey = None
 		
+			print "Probability of each key "+str(probabilityOfClassLabels)
 			'''
 			Getting the label with Max Probability, if 2 labels are equally probable then the selection
 			depends on the order in which the keys are stored, which is generally random
@@ -265,12 +281,15 @@ def classifyNewSample(tree, testData,depth):
 					bestKey = key
 
 			predictedLabel = bestKey
-		currentPredictionPlusExpectedValues.append(predictedLabel)
+
+		if(type(predictedLabel) == dict):	
+			currentPredictionPlusExpectedValues.append(str(predictedLabel[0]))
+		else:
+			currentPredictionPlusExpectedValues.append(str(predictedLabel))	
 		currentPredictionPlusExpectedValues.append(row[len(row)-1])
 		predictionsPlusExpectedValues.append(currentPredictionPlusExpectedValues)
 
-	for row in predictionsPlusExpectedValues:
-		print row		
+	writeResult(predictionsPlusExpectedValues=predictionsPlusExpectedValues,depth=depth,fileName=fileName)
 
 '''
 The method splitData takes a dataset as input and splits it into 2 based on the criteria on the specified column and returns the resulting 2 datasets.
@@ -294,19 +313,35 @@ def main():
 	trainData = readData("zoo-train.csv")
 	testData = readData("zoo-test.csv")
 
-	#Taking depth of tree as input
-	depth = 10
+	for depth in range(0,10):
+		#Generating tree for depths 0 to 9
+		#The variable tree will be an instance of the type Node
+		tree = createTree(trainData,depth)
+		print "  "
+		print ""
+		print "Structure of the Tree : "
+		print ""
+		printTree(tree)
+		print ""
+		print "Predicted values vs the Expected Value"
+		classifyNewSample(tree=tree, testData=testData,depth=depth,fileName="predictionsZooDataWithDepth")
 
-	#The variable tree will be an instance of the type Node
-	tree = createTree(trainData,depth)
-	print "  "
-	print ""
-	print "Structure of the Tree : "
-	print ""
-	printTree(tree)
-	print ""
-	print "Predicted values vs the Expected Value"
-	classifyNewSample(tree, testData,depth)
+	trainData = readData("foodInspectionTrain.csv")
+	testData = readData("foodInspectionTest.csv")
+
+	for depth in range(0,16):
+		#Generating tree for depths 0 to 9
+		#The variable tree will be an instance of the type Node
+		tree = createTree(trainData,depth)
+		print "  "
+		print ""
+		print "Structure of the Tree : "
+		print ""
+		printTree(tree)
+		print ""
+		print "Predicted values vs the Expected Value"
+		classifyNewSample(tree=tree, testData=testData,depth=depth, fileName="predictionOfOwnDataWithDepth")
+
 
 if __name__ == "__main__" : main()	
 		
