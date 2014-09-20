@@ -1,0 +1,90 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.trees.J48 -C 0.25 -M 2
+Relation:     zoo
+Instances:    66
+Attributes:   17
+              feature0
+              feature1
+              feature2
+              feature3
+              feature4
+              feature5
+              feature6
+              feature7
+              feature8
+              feature9
+              feature10
+              feature11
+              feature12
+              feature13
+              feature14
+              feature15
+              feature16
+Test mode:    10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+feature1 = 1: 2 (13.0)
+feature1 = 0
+|   feature3 = 1: 1 (27.0)
+|   feature3 = 0
+|   |   feature7 = 1
+|   |   |   feature11 = 0
+|   |   |   |   feature12 = 0: 3 (3.0)
+|   |   |   |   feature12 = 2: 3 (0.0)
+|   |   |   |   feature12 = 4: 5 (3.0)
+|   |   |   |   feature12 = 6: 3 (0.0)
+|   |   |   |   feature12 = 8: 3 (0.0)
+|   |   |   feature11 = 1: 4 (9.0)
+|   |   feature7 = 0
+|   |   |   feature4 = 1: 6 (4.0)
+|   |   |   feature4 = 0: 7 (7.0/1.0)
+
+Number of Leaves  : 	10
+
+Size of the tree : 	16
+
+
+Time taken to build model: 0.03 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances          62               93.9394 %
+Incorrectly Classified Instances         4                6.0606 %
+Kappa statistic                          0.9198
+Mean absolute error                      0.0209
+Root mean squared error                  0.1339
+Relative absolute error                  9.5009 %
+Root relative squared error             40.4947 %
+Coverage of cases (0.95 level)          93.9394 %
+Mean rel. region size (0.95 level)      15.368  %
+Total Number of Instances               66     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     1
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     2
+                 0.667    0.000    1.000      0.667    0.800      0.810    0.833     0.682     3
+                 1.000    0.018    0.900      1.000    0.947      0.940    0.991     0.900     4
+                 1.000    0.000    1.000      1.000    1.000      1.000    1.000     1.000     5
+                 0.600    0.016    0.750      0.600    0.667      0.647    0.775     0.480     6
+                 0.833    0.033    0.714      0.833    0.769      0.747    0.886     0.610     7
+Weighted Avg.    0.939    0.007    0.941      0.939    0.938      0.933    0.964     0.897     
+
+=== Confusion Matrix ===
+
+  a  b  c  d  e  f  g   <-- classified as
+ 27  0  0  0  0  0  0 |  a = 1
+  0 13  0  0  0  0  0 |  b = 2
+  0  0  2  1  0  0  0 |  c = 3
+  0  0  0  9  0  0  0 |  d = 4
+  0  0  0  0  3  0  0 |  e = 5
+  0  0  0  0  0  3  2 |  f = 6
+  0  0  0  0  0  1  5 |  g = 7
+

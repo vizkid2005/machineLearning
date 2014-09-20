@@ -1,0 +1,10 @@
+@relation zoo
+
+@attribute feature0 {"this is yes", "this is no"}
+@attribute feature1 {1, 0}
+@attribute feature2 {1, 0}
+
+
+@data
+"this is yes",1,1
+"this is no",1,0
