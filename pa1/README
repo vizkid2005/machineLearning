@@ -13,6 +13,8 @@ This project implements a fixed depth decision tree algorithm using Python (2.7)
 
 Limitations of the project:
 1) The algorithm only supports binary splits. 
+2) The algorithm does not work as expected, if the test/training dataset has missing values.
+
 
 
 Running Application:
@@ -22,7 +24,7 @@ Project's File structure:
 
 
 Contents of files:
-
+1) createDataSet.py
 
 
 
