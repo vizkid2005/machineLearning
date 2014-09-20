@@ -13,11 +13,34 @@ This project implements a fixed depth decision tree algorithm using Python (2.7)
 
 Limitations of the project:
 1) The algorithm only supports binary splits. 
-2) The algorithm does not work as expected, if the test/training dataset has missing values.
+2) The algorithm does not work as expected if the test/training dataset has missing values.
+
 
 
 
 Running Application:   
+The sytax of the command which has to be executed can be seen below:
+
+	python decTree.py <training-file-name> <test-file-name> [<threshold> [depth]]
+
+Arguments:
+1) training-file-name: This is the name of the file which contains the training dataset.
+2) test-file-name: This is the name of the file which contains the test dataset.
+3) threshold: This is the threshold parameter, which is of float type. The split at a node is done, only if the maximum achievable "Information gain" at that node is greater than this threshold parameter. This is an optional parameter, and if it is not set then it will be defaulted to the value '0'.
+4) depth: This is the maximum depth of the decision tree, which has to be learnt. This is also an optional parameter, and the default value of it is "10".
+
+Note that, in-order to override the depth parameter, even the threshold parameter has to be overriden.
+
+Examples:
+1) python decTree.py "zoo-train.csv" "zoo-test.csv" 0.001 5
+Here, "zoo-train.csv" is the name of the training dataset, and "zoo-test.csv" is the name of the test dataset. Here, '0.001' is used as the threshold parameter, and '5' is used as the maximum allowed depth of the decision tree.
+
+2) python decTree.py "foodInspectionTrain.csv" "foodInspectionTest.csv"
+Here, as the values of the threshold and depth are not given, they will be defaulted to 0, 10 respectively.
+
+3) python decTree.py "foodInspectionTrain.csv" "foodInspectionTest.csv" 0.001
+Here, the value of the threshold will be overriden to '0.001', but the maximum depth of the tree will be given the default value.
+
 
 Project's File structure:
 
