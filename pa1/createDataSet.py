@@ -9,9 +9,7 @@ This file is used to create a workable datasets for training and testing(each of
 from the food inspection dataset that contains more than 8700 samples.
 
 '''
-def main() :
-	
-	numberOfLines = 8750
+def main():
 	entireDataSet = []
 	trainData = []
 	testData = []
@@ -19,7 +17,7 @@ def main() :
 	#Getting the dataset from CSV file to memory
 	#Reusing the method readData from decTree.py
 	entireDataSet = decTree.readData("foodInspectionsCleaned.csv")
-
+	numberOfLines=len(entireDataSet)
 	for x in range(0,1000):
 		randNum = random.randrange(0,numberOfLines)
 		trainData.append(entireDataSet[randNum])
