@@ -1,0 +1,65 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.trees.J48 -C 0.25 -M 2
+Relation:     foodInspection
+Instances:    1000
+Attributes:   10
+              feature0
+              feature1
+              feature2
+              feature3
+              feature4
+              feature5
+              feature6
+              feature7
+              feature8
+              feature9
+Test mode:    10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+: Pass (1000.0/405.0)
+
+Number of Leaves  : 	1
+
+Size of the tree : 	1
+
+
+Time taken to build model: 0.09 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         595               59.5    %
+Incorrectly Classified Instances       405               40.5    %
+Kappa statistic                          0     
+Mean absolute error                      0.2384
+Root mean squared error                  0.3453
+Relative absolute error                 99.8113 %
+Root relative squared error             99.9995 %
+Coverage of cases (0.95 level)          95.7    %
+Mean rel. region size (0.95 level)      80      %
+Total Number of Instances             1000     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 1.000    1.000    0.595      1.000    0.746      0.000    0.495     0.593     Pass
+                 0.000    0.000    0.000      0.000    0.000      0.000    0.490     0.111     Pass w/ Conditions
+                 0.000    0.000    0.000      0.000    0.000      0.000    0.497     0.170     Fail
+                 0.000    0.000    0.000      0.000    0.000      0.000    0.489     0.077     Out of Business
+                 0.000    0.000    0.000      0.000    0.000      0.000    0.474     0.041     No Entry
+Weighted Avg.    0.595    0.595    0.354      0.595    0.444      0.000    0.493     0.402     
+
+=== Confusion Matrix ===
+
+   a   b   c   d   e   <-- classified as
+ 595   0   0   0   0 |   a = Pass
+ 113   0   0   0   0 |   b = Pass w/ Conditions
+ 171   0   0   0   0 |   c = Fail
+  78   0   0   0   0 |   d = Out of Business
+  43   0   0   0   0 |   e = No Entry
+
+

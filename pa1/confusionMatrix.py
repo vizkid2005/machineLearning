@@ -1,0 +1,16 @@
+filename="PredictionOfzoo-test"
+ext=".csv"
+
+for i in range(1,3):
+	filename="results/PredictionOfzoo-test"
+	filename=filename+str(i)+ext
+	f = open(filename,"r")
+	lines=f.readlines()
+
+	distinctClasses=[]
+	totalCount=len(lines)
+	misClassificationCount=0
+	for l in lines:
+					
+	
+
