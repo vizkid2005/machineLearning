@@ -153,9 +153,9 @@ by showing subsequent branches with indents.
 '''	
 def printTree(tree, indent=''):
 	if tree.leafValues != None:
-		print "Ended in : "+str(tree.leafValues)
+		print "Leaf Node : "+str(tree.leafValues)
 	else:
-		print "Column : "+str(tree.col)+" with criteria : "+str(tree.criteria)
+		print "Split on Column : "+str(tree.col)+" with criteria : "+str(tree.criteria)
 		print indent+"Left Branch -> ",
 		printTree(tree.leftBranch,indent="     "+indent)
 		print indent+"Right Branch -> ",
@@ -263,44 +263,21 @@ def splitData(subDataSet, column, criteria):
 	return (subDataSet2,subDataSet1)
 
 #The main function that calls all other functions, execution begins here
-def main():
-	print 'Number of arguments:', len(sys.argv), 'arguments.'
-	print 'Argument List:', str(sys.argv)	
+def main():	
+
+	trainingFileName="zoo-train.csv"
+	testFileName="zoo-test.csv"
 	
-	if(len(sys.argv) < 3):
-		print "Wrong input parameters!!"
-		print "Usage: python decTree.py <training-file-name> <test-file-name> [<threshold> [<depth-of-the-tree>]]"
-		exit()
-		
-	trainingFileName=sys.argv[1]
-	testFileName=sys.argv[2]
-	# these are the default values of threshold and depth
+	#Change the trhreshold value if you want to have a minimum information gain at each split, by default we assigned it 0
 	threshold=0.0
-	d=10
-	
-	if len(sys.argv) > 3:
-		try:
-			threshold= float(sys.argv[3])
-		except:
-			print "Threshold should be a float type"
-			exit()
-	
-	if len(sys.argv) > 4:
-		try:
-			d= int(sys.argv[4])
-		except:
-			print "Depth should be a integer type"
-			exit()
-		
-	
-	
+
 	#First we work with the zoo datasets
 	#Gettng test and train data from CSV files
 	trainData = readData(trainingFileName)
 	testData = readData(testFileName)
 
-	print "Trees for various Depths in the Zoo training Data : "
-	for depth in range(0,d):
+	for depth in range(0,15):
+		print "Trees for Depth "+str(depth)+" in the Zoo training Data : "
 		#The variable tree will be an instance of the type Node
 		tree = createTree(trainData,depth,threshold)
 		print ""
@@ -314,6 +291,31 @@ def main():
 		#Now that we have the tree built,lets predict output on the test data
 		fileName="results/"+"PredictionOf"+testFileName.split('.')[0]
 		classifyNewSample(tree=tree, testData=testData,depth=depth,fileName=fileName)
+
+	#CHANGE THESE FILENAMES IF YOU WANT TO MAKE A TREE WITH YOUR OWN DATA		
+	trainingFileName="foodInspectionTrainPruned.csv"
+	testFileName="foodInspectionTestPruned.csv"
+
+	#Now we work own datasets
+	#Gettng test and train data from CSV files
+	trainData = readData(trainingFileName)
+	testData = readData(testFileName)		
+
+	for depth in range(0,15):
+		print "Trees for Depth "+str(depth)+" in the FoodInspection Training Data : "
+		#The variable tree will be an instance of the type Node
+		tree = createTree(trainData,depth,threshold)
+		print ""
+		print ""
+		print "Structure of the Tree : "
+		print ""
+		#Printing the tree in a form that helps visualize the structure better
+		printTree(tree)
+		print ""
+
+		#Now that we have the tree built,lets predict output on the test data
+		fileName="results/"+"PredictionOf"+testFileName.split('.')[0]
+		classifyNewSample(tree=tree, testData=testData,depth=depth,fileName=fileName)		
 
 #Execution begins here
 if __name__ == "__main__" : main()	
