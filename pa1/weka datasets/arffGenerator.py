@@ -10,7 +10,7 @@ from the food inspection dataset that contains more than 8700 samples.
 '''
 def main():
 	data = []
-	myFile = open("foodInspectionTest.csv", 'rt')
+	myFile = open("foodInspectionTrainPruned.csv", 'rt')
 	try:
 		reader = csv.reader(myFile)
 		for row in reader:
@@ -44,7 +44,7 @@ def main():
 
 	for row in data:
 		print ",".join(row)
-	
+		#pass
 	
 if __name__ == "__main__": main()	
 
