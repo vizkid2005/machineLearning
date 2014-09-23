@@ -35,10 +35,10 @@ Examples:
 1) python decTree.py "zoo-train.csv" "zoo-test.csv" 0.001 5
 Here, "zoo-train.csv" is the name of the training dataset, and "zoo-test.csv" is the name of the test dataset. Here, '0.001' is used as the threshold parameter, and '5' is used as the maximum allowed depth of the decision tree.
 
-2) python decTree.py "foodInspectionTrain.csv" "foodInspectionTest.csv"
+2) python decTree.py "foodInspectionTrainPruned.csv" "foodInspectionTestPruned.csv"
 Here, as the values of the threshold and depth are not given, they will be defaulted to 0, 10 respectively.
 
-3) python decTree.py "foodInspectionTrain.csv" "foodInspectionTest.csv" 0.001
+3) python decTree.py "foodInspectionTrainPruned.csv" "foodInspectionTestPruned.csv" 0.001
 Here, the value of the threshold will be overriden to '0.001', but the maximum depth of the tree will be given the default value.
 
 

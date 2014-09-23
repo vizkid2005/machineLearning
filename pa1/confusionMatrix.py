@@ -1,10 +1,14 @@
+import csv
 ext=".csv"
 for i in range(1,3):
-	filename="results/PredictionOfzoo-test"
+	filename="results/PredictionOffoodInspectionTest"
 	filename=filename+str(i)+ext
 	f = open(filename,"r")
-	lines=f.readlines()
-
+	
+	reader=csv.reader(f)
+	lines=[]
+	for row in reader:
+		lines.append(row)
 
 	distinctClasses={}
 	reverseIndex={}
@@ -12,8 +16,7 @@ for i in range(1,3):
 	t=[]
 	liTuples=[]
 	count=0
-	for l in lines:
-		t=l.split()[0].split(',')
+	for t in lines:
 		liTuples.append(t)
 		if t[1] not in distinctClasses:
 			distinctClasses[t[1]]=count
