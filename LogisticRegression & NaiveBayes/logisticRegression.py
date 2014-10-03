@@ -52,9 +52,7 @@ def main():
 			error = trainingSet[classIndex] - maxLikelyHood(weightVector,sample)
 			for j in range(0,numFeatures):
 				gradientVector[j]+=gradientVector[j]+error*sample[j]
-				
-			for k in range(0,numFeatures):
-				weightVector[k]+=learningRate*gradientVector[k]
+				weightVector[j]+=learningRate*gradientVector[j]				
 				
 		
 #Execution begins here
