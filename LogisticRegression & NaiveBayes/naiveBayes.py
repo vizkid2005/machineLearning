@@ -27,18 +27,24 @@ def readData(fileName):
 #lProbabilities - Prior Probabilities for each label.
 #fProbabilities - Conditional Feature Probabilities for each label.
 def predictLabel(row,lProbabilities,fProbabilities):
+	global numFeatures
+	global classIndex
+	
 	#init vars
 	maxProb =0
 	maxLabel=""
 	#loop over all possible labels and compute prob for each label.
+	s=""
 	for label in lProbabilities:
 		currentProb = lProbabilities[label]
 		for index in range(numFeatures):
-			key = (index, row[index], label)
+			key = (str(index), row[index], label)
 			currentProb*=fProbabilities[key]
 		if currentProb>maxProb:
 			maxProb=currentProb
 			maxLabel=label
+
+
 	return maxLabel
 
 
@@ -48,6 +54,9 @@ def predictLabel(row,lProbabilities,fProbabilities):
 #consider 1 as + 
 # ans o as -ve
 def handleTestData(inputFileName,lProbabilities,fProbabilities,outputFileName):
+	global numFeatures
+	global classIndex
+	
 	tp=0
 	fp=0
 	tn=0
@@ -79,7 +88,14 @@ def handleTestData(inputFileName,lProbabilities,fProbabilities,outputFileName):
 	print "Total False Negatives is ",fn
 
 def main():
-
+	#define global variables...
+	global numFeatures
+	global trainingSetFileName
+	global testSetFileName
+	global numFeatures
+	global classIndex
+	
+	
 	trainingSet=readData(trainingSetFileName)
 	if len(trainingSet) <=0:
 		print "No data in training set"
@@ -87,23 +103,32 @@ def main():
 
 	numFeatures=len(trainingSet[0])-1
 	classIndex=numFeatures
-	
+
+	#the below dictionary will contain probabilities of the label occurrences
+	#the key will be the label value	
 	labelCounts={}
-	#init class label counts...
-	labelCounts["0"]=0
-	labelCounts["1"]=0
-	
-	#the dictionary will contain counts of the feature occurrences, for each output label
+
+	#the below dictionary will contain counts of the feature occurrences, for each output label
 	#the key will be a tuple (featureIndex, featureValue,outputLabel)
 	featureCounts={}
 	
-	#the dictionary will contain probabilities of the feature occurrences, given output label
+	#the below dictionary will contain probabilities of the feature occurrences, given output label
 	#the key will be a tuple (featureIndex, featureValue,outputLabel)
 	featureProbabilities={}
+	
+	#the below dictionary will contain probabilities of the label occurrences
+	#the key will be the label value
+	labelProbabilities={}
 
-	#count the label occurrences...
+	
 	for row in trainingSet:
-		labelCounts[row[classIndex]]+=1
+		#count the label occurrences...
+		if row[classIndex] in labelCounts:			
+			labelCounts[row[classIndex]]+=1
+		else:
+			labelCounts[row[classIndex]]=1
+		
+		#computing conditional counts.	
 		for index in range(numFeatures):
 			key = (str(index), row[index],row[classIndex])
 			if key in featureCounts:
@@ -111,10 +136,14 @@ def main():
 			else:
 				featureCounts[key]=1
 
+	totalCount=len(trainingSet)
+	#compute label Probabilities
+	for key in labelCounts:
+		labelProbabilities[key]=float(labelCounts[key])/totalCount
+
 	#compute feature probabilities given class label.
 	for key in featureCounts:
 		featureProbabilities[key] = float(featureCounts[key])/labelCounts[key[2]]
-
 	handleTestData(testSetFileName,labelProbabilities,featureProbabilities,"NB-results/output.csv")
 
 			

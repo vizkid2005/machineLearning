@@ -7,8 +7,8 @@ trainingSetFileName="zoo-trainSimplified.csv"
 testSetFileName="zoo-testSimplified.csv"
 numFeatures=-1
 classIndex=-1
-learningRate=math.exp(5)
-threshold = math.exp(100)
+learningRate=0.01
+threshold = 1
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):
@@ -29,7 +29,16 @@ def readData(fileName):
 #w is the weight vector
 #row is a sample
 def predictLabel(row,w):
-	
+	global numFeatures	
+	#computing dot product here
+	dotProduct=0
+	for i in range(numFeatures):
+		dotProduct+=(w[i]*int(row[i]))
+		print "asddddddddddddddddddddddddddddddddddddddddddd"
+	if dotProduct >= 0:
+		   return "1"
+	return "0"
+
 
 
 #inputFileName - file name of the test set
@@ -38,6 +47,8 @@ def predictLabel(row,w):
 #consider 1 as + 
 # ans o as -ve
 def handleTestData(inputFileName,w,outputFileName):
+	global numFeatures
+	global classIndex
 	tp=0
 	fp=0
 	tn=0
@@ -72,13 +83,24 @@ def handleTestData(inputFileName,w,outputFileName):
 #x is the feature vecotor
 #returns 1/(1+exp(w.x))
 def maxLikelyHood(w,x):
+	global numFeatures
 	dotProduct=0
 	for i in range(0,numFeatures):
-		dotProduct+=(w[i]*x[i])
-	return float(1)/(1+math.exp(dotProduct))
+		dotProduct+=(w[i]*int(x[i]))
+	print math.exp(dotProduct)
+	return long(1)/(1+math.exp(dotProduct))
 
 def main():
-
+	#define global variables...
+	global numFeatures
+	global trainingSetFileName
+	global testSetFileName
+	global numFeatures
+	global classIndex
+	global learningRate
+	global threshold
+	
+	#read the training file.
 	trainingSet=readData(trainingSetFileName)
 	if len(trainingSet) <=0:
 		print "No data in training set"
@@ -96,9 +118,9 @@ def main():
 		iterations+=1
 		gradientVector = [0 for i in range(0,numFeatures)]
 		for sample in trainingSet:
-			error = float(sample[classIndex]) - maxLikelyHood(weightVector,sample)
+			error = long(sample[classIndex]) - maxLikelyHood(weightVector,sample)
 			for j in range(0,numFeatures):
-				gradientVector[j]+=gradientVector[j]+error*float(sample[j])
+				gradientVector[j]+=gradientVector[j]+error*long(sample[j])
 				weightVector[j]+=learningRate*gradientVector[j]				
 						
 		#check whether the increment in weight vector is greater than the "threshold" for every feature...
