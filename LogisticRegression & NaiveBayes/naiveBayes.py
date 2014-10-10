@@ -111,6 +111,9 @@ def main():
 	#the below dictionary will contain counts of the feature occurrences, for each output label
 	#the key will be a tuple (featureIndex, featureValue,outputLabel)
 	featureCounts={}
+
+	#the below list is a list of list, each individual list is a list of distict features for that index
+	distinctFeatures=[[] for i in range(numFeatures)]
 	
 	#the below dictionary will contain probabilities of the feature occurrences, given output label
 	#the key will be a tuple (featureIndex, featureValue,outputLabel)
@@ -120,6 +123,7 @@ def main():
 	#the key will be the label value
 	labelProbabilities={}
 
+	
 	
 	for row in trainingSet:
 		#count the label occurrences...
@@ -134,13 +138,30 @@ def main():
 			if key in featureCounts:
 				featureCounts[key]+=1
 			else:
-				featureCounts[key]=1
+				featureCounts[key]=2 # start with 1 to accommodate smooting.			
 
+			if row[index] not in distinctFeatures[index]:
+					distinctFeatures[index].append(row[index])
+
+	#do extra work for feature 13 ( index 12), as the value '5' is not in training set.
+	distinctFeatures[12].append('5')
+	
+	#laplace smoothing...
+	for index in range(numFeatures):
+		for value in distinctFeatures[index]:
+			for label in labelCounts:
+				key = (str(index), value, label)
+				if key not in labelCounts:
+					featureCounts[key]=1
+	
 	totalCount=len(trainingSet)
 	#compute label Probabilities
 	for key in labelCounts:
 		labelProbabilities[key]=float(labelCounts[key])/totalCount
 
+	
+	
+	
 	#compute feature probabilities given class label.
 	for key in featureCounts:
 		featureProbabilities[key] = float(featureCounts[key])/labelCounts[key[2]]
