@@ -33,8 +33,8 @@ def predictLabel(row,w):
 	#computing dot product here
 	dotProduct=0
 	for i in range(numFeatures):
-		dotProduct+=(w[i]*int(row[i]))
-		print "asddddddddddddddddddddddddddddddddddddddddddd"
+		dotProduct+=(w[i]*long(row[i]))
+		
 	if dotProduct >= 0:
 		   return "1"
 	return "0"
@@ -86,10 +86,11 @@ def maxLikelyHood(w,x):
 	global numFeatures
 	dotProduct=0
 	for i in range(0,numFeatures):
-		dotProduct+=(w[i]*int(x[i]))
-	print math.exp(dotProduct)
+		dotProduct+=(w[i]*long(x[i]))	
+	#print math.exp(dotProduct)
 	return long(1)/(1+math.exp(dotProduct))
-
+	#return 0
+	
 def main():
 	#define global variables...
 	global numFeatures
@@ -108,6 +109,12 @@ def main():
 
 	numFeatures=len(trainingSet[0])-1
 	classIndex=numFeatures
+	
+	#data processing step...
+	#have to bring all values to a same range [0-1]
+	#only feature with index -12 doesnot belong in this range. So, that feature by 8 (its max value).
+	for index in range(len(trainingSet)):
+		trainingSet[index][12] = str(long(int(trainingSet[index][12]))/8)
 
 	#initialize the weight vector to be 0's
 	weightVector = [0 for i in range(0,numFeatures)]	
@@ -120,13 +127,13 @@ def main():
 		for sample in trainingSet:
 			error = long(sample[classIndex]) - maxLikelyHood(weightVector,sample)
 			for j in range(0,numFeatures):
-				gradientVector[j]+=gradientVector[j]+error*long(sample[j])
+				gradientVector[j]+=error*long(sample[j])
 				weightVector[j]+=learningRate*gradientVector[j]				
-						
 		#check whether the increment in weight vector is greater than the "threshold" for every feature...
 		
 		shouldBreak=True
 		for i in range(numFeatures):
+			print weightVector, weightVectorBackUp
 			if math.fabs(weightVector[i] - weightVectorBackUp[i]) > threshold:
 				shouldBreak=False		
 			
