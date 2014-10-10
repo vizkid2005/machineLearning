@@ -7,8 +7,8 @@ trainingSetFileName="zoo-trainSimplified.csv"
 testSetFileName="zoo-testSimplified.csv"
 numFeatures=-1
 classIndex=-1
-learningRate=0.001
-threshold = 1
+learningRate=0.0001
+threshold = 0.0015
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):
@@ -112,7 +112,7 @@ def main():
 	
 	#data processing step...
 	#have to bring all values to a same range [0-1]
-	#only feature with index -12 doesnot belong in this range. So, that feature by 8 (its max value).
+	#only feature with index - 12 doesnot belong in this range. So, that feature by 8 (its max value).
 	for index in range(len(trainingSet)):
 		trainingSet[index][12] = str(long(int(trainingSet[index][12]))/8)
 
@@ -125,15 +125,17 @@ def main():
 		iterations+=1
 		gradientVector = [0 for i in range(0,numFeatures)]
 		for sample in trainingSet:
-			error = long(sample[classIndex]) - maxLikelyHood(weightVector,sample)
+			error = long(sample[classIndex]) - maxLikelyHood(weightVectorBackUp,sample)
 			for j in range(0,numFeatures):
 				gradientVector[j]+=error*long(sample[j])
-				weightVector[j]+=learningRate*gradientVector[j]				
-		#check whether the increment in weight vector is greater than the "threshold" for every feature...
 		
+		#update weight vector..
+		for j in range(numFeatures):		
+			weightVector[j]+=learningRate*gradientVector[j]				
+		print weightVector
+		#check whether the increment in weight vector is greater than the "threshold" for every feature...		
 		shouldBreak=True
 		for i in range(numFeatures):
-			print weightVector, weightVectorBackUp
 			if math.fabs(weightVector[i] - weightVectorBackUp[i]) > threshold:
 				shouldBreak=False		
 			
