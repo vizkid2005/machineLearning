@@ -29,13 +29,8 @@ def readData(fileName):
 #w is the weight vector
 #row is a sample
 def predictLabel(row,w):
-	dotProduct=0
-	#computing dot product here
-	for i in range(numFeatures):
-		dotProduct+=(w[i]*row[i])
-	if dotProduct >= 0:
-		return "1"
-	return "0"
+	
+
 
 #inputFileName - file name of the test set
 # w is the weight vector.
@@ -124,7 +119,7 @@ def main():
 	
 	#evaluating the test data...
 	print "Evaluating the Test data..."
-	handleTestData("zoo-testSimplified.csv",weightVector,"LR-results/ouput.txt")
+	handleTestData(testSetFileName,weightVector,"LR-results/ouput.csv")
 	
 #Execution begins here
 if __name__ == "__main__" : main()	

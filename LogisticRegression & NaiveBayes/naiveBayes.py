@@ -82,7 +82,36 @@ def main():
 
 	numFeatures=len(trainingSet[0])-1
 	classIndex=numFeatures
-
 	
+	labelCounts={}
+	#init class label counts...
+	labelCounts["0"]=0
+	labelCounts["1"]=0
+	
+	#the dictionary will contain counts of the feature occurrences, for each output label
+	#the key will be a tuple (featureIndex, featureValue,outputLabel)
+	featureCounts={}
+	
+	#the dictionary will contain probabilities of the feature occurrences, given output label
+	#the key will be a tuple (featureIndex, featureValue,outputLabel)
+	featureProbabilities={}
+
+	#count the label occurrences...
+	for row in trainingSet:
+		labelCounts[row[classIndex]]+=1
+		for index in range(numFeatures):
+			key = (str(index), row[index],row[classIndex])
+			if key in featureCounts:
+				featureCounts[key]+=1
+			else:
+				featureCounts[key]=1
+
+	#compute feature probabilities given class label.
+	for key in featureCounts:
+		featureProbabilities[key] = float(featureCounts[key])/labelCounts[key[2]]
+
+	handleTestData(testSetFileName,featureProbabilities,"NB-results/output.csv")
+
+			
 #Execution begins here
 if __name__ == "__main__" : main()	
