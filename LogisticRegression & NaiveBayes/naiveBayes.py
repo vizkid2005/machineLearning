@@ -29,21 +29,19 @@ def readData(fileName):
 def predictLabel(row,lProbabilities,fProbabilities):
 	global numFeatures
 	global classIndex
-	
 	#init vars
 	maxProb =0
 	maxLabel=""
 	#loop over all possible labels and compute prob for each label.
-	s=""
+	#use decision theory here???? TODO
 	for label in lProbabilities:
-		currentProb = lProbabilities[label]
+		currentProb = lProbabilities[label]		
 		for index in range(numFeatures):
-			key = (str(index), row[index], label)
+			key = (str(index), row[index], label)			
 			currentProb*=fProbabilities[key]
 		if currentProb>maxProb:
 			maxProb=currentProb
 			maxLabel=label
-
 
 	return maxLabel
 
@@ -92,7 +90,6 @@ def main():
 	global numFeatures
 	global trainingSetFileName
 	global testSetFileName
-	global numFeatures
 	global classIndex
 	
 	
@@ -151,20 +148,20 @@ def main():
 		for value in distinctFeatures[index]:
 			for label in labelCounts:
 				key = (str(index), value, label)
-				if key not in labelCounts:
+				if key not in featureCounts:
 					featureCounts[key]=1
 	
 	totalCount=len(trainingSet)
 	#compute label Probabilities
 	for key in labelCounts:
 		labelProbabilities[key]=float(labelCounts[key])/totalCount
-
-	
 	
 	
 	#compute feature probabilities given class label.
 	for key in featureCounts:
 		featureProbabilities[key] = float(featureCounts[key])/labelCounts[key[2]]
+		print featureProbabilities[key],key
+		
 	handleTestData(testSetFileName,labelProbabilities,featureProbabilities,"NB-results/output.csv")
 
 			
