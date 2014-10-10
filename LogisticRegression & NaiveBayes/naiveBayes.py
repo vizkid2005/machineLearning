@@ -23,26 +23,31 @@ def readData(fileName):
 		myFile.close()
 	return data	
 
-#w is the weight vector
 #row is a sample
-def predictLabel(row):
-#TODO
-	return "1"
-'''
-	#computing dot product here
-	for i in range(numFeatures):
-		dotProduct+=(w[i]*row[i])
-	if dotProduct >= 0:
-		return "1"
-	return "0"
-'''
+#lProbabilities - Prior Probabilities for each label.
+#fProbabilities - Conditional Feature Probabilities for each label.
+def predictLabel(row,lProbabilities,fProbabilities):
+	#init vars
+	maxProb =0
+	maxLabel=""
+	#loop over all possible labels and compute prob for each label.
+	for label in lProbabilities:
+		currentProb = lProbabilities[label]
+		for index in range(numFeatures):
+			key = (index, row[index], label)
+			currentProb*=fProbabilities[key]
+		if currentProb>maxProb:
+			maxProb=currentProb
+			maxLabel=label
+	return maxLabel
+
 
 #inputFileName - file name of the test set
 # w is the weight vector.
 #outputFileName - file name for the output.
 #consider 1 as + 
 # ans o as -ve
-def handleTestData(inputFileName,w,outputFileName):
+def handleTestData(inputFileName,lProbabilities,fProbabilities,outputFileName):
 	tp=0
 	fp=0
 	tn=0
@@ -54,7 +59,7 @@ def handleTestData(inputFileName,w,outputFileName):
 		exit()
 	print "Printing (actual, predicted)"
 	for row in samples:
-		pLabel = predictLabel(row)
+		pLabel = predictLabel(row,lProbabilities,fProbabilities)
 		aLabel = row[classIndex] 
 		print aLabel,pLabel
 		if(aLabel=="1"):
@@ -110,7 +115,7 @@ def main():
 	for key in featureCounts:
 		featureProbabilities[key] = float(featureCounts[key])/labelCounts[key[2]]
 
-	handleTestData(testSetFileName,featureProbabilities,"NB-results/output.csv")
+	handleTestData(testSetFileName,labelProbabilities,featureProbabilities,"NB-results/output.csv")
 
 			
 #Execution begins here
