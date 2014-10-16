@@ -86,7 +86,7 @@ def maxLikelyHood(w,x):
 	global numFeatures
 	dotProduct=0
 	for i in range(0,numFeatures):
-		dotProduct+=(w[i]*long(x[i]))	
+		dotProduct-=(w[i]*long(x[i]))	#note the minus sign here...
 	#print math.exp(dotProduct)
 	return long(1)/(1+math.exp(dotProduct))
 	#return 0
