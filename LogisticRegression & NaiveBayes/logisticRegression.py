@@ -110,12 +110,6 @@ def main():
 	numFeatures=len(trainingSet[0])-1
 	classIndex=numFeatures
 	
-	#data processing step...
-	#have to bring all values to a same range [0-1]
-	#only feature with index - 12 doesnot belong in this range. So, that feature by 8 (its max value).
-	for index in range(len(trainingSet)):
-		trainingSet[index][12] = str(long(int(trainingSet[index][12]))/8)
-
 	#initialize the weight vector to be 0's
 	weightVector = [0 for i in range(0,numFeatures)]	
 	weightVectorBackUp = [0 for i in range(0,numFeatures)]		
