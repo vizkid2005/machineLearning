@@ -1,0 +1,190 @@
+=== Run information ===
+
+Scheme:weka.classifiers.bayes.NaiveBayes 
+Relation:     zoo
+Instances:    66
+Attributes:   17
+              feature0
+              feature1
+              feature2
+              feature3
+              feature4
+              feature5
+              feature6
+              feature7
+              feature8
+              feature9
+              feature10
+              feature11
+              feature12
+              feature13
+              feature14
+              feature15
+              feature16
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Naive Bayes Classifier
+
+                Class
+Attribute           1      0
+               (0.41) (0.59)
+=============================
+feature0
+  1               27.0    3.0
+  0                2.0   38.0
+  [total]         29.0   41.0
+
+feature1
+  1                1.0   14.0
+  0               28.0   27.0
+  [total]         29.0   41.0
+
+feature2
+  1                2.0   38.0
+  0               27.0    3.0
+  [total]         29.0   41.0
+
+feature3
+  1               28.0    1.0
+  0                1.0   40.0
+  [total]         29.0   41.0
+
+feature4
+  1                2.0   15.0
+  0               27.0   26.0
+  [total]         29.0   41.0
+
+feature5
+  1                4.0   21.0
+  0               25.0   20.0
+  [total]         29.0   41.0
+
+feature6
+  1               15.0   26.0
+  0               14.0   15.0
+  [total]         29.0   41.0
+
+feature7
+  1               27.0   16.0
+  0                2.0   25.0
+  [total]         29.0   41.0
+
+feature8
+  1               28.0   29.0
+  0                1.0   12.0
+  [total]         29.0   41.0
+
+feature9
+  1               28.0   25.0
+  0                1.0   16.0
+  [total]         29.0   41.0
+
+feature10
+  1                1.0    6.0
+  0               28.0   35.0
+  [total]         29.0   41.0
+
+feature11
+  0               27.0   31.0
+  1                2.0   10.0
+  [total]         29.0   41.0
+
+feature12
+  0                2.0   14.0
+  2                4.0   14.0
+  4               24.0    5.0
+  5                1.0    1.0
+  6                1.0    8.0
+  8                1.0    3.0
+  [total]         33.0   45.0
+
+feature13
+  1               23.0   28.0
+  0                6.0   13.0
+  [total]         29.0   41.0
+
+feature14
+  1                6.0    6.0
+  0               23.0   35.0
+  [total]         29.0   41.0
+
+feature15
+  1               22.0    7.0
+  0                7.0   34.0
+  [total]         29.0   41.0
+
+
+
+Time taken to build model: 0 seconds
+
+=== Predictions on test split ===
+
+inst#,    actual, predicted, error, probability distribution
+     1        1:1        1:1         *1      0    
+     2        1:1        1:1         *1      0    
+     3        1:1        1:1         *0.95   0.05 
+     4        1:1        1:1         *1      0    
+     5        1:1        1:1         *1      0    
+     6        1:1        1:1         *1      0    
+     7        1:1        1:1         *1      0    
+     8        1:1        1:1         *0.999  0.001
+     9        1:1        1:1         *1      0    
+    10        1:1        1:1         *1      0    
+    11        1:1        1:1         *1      0    
+    12        1:1        1:1         *1      0    
+    13        1:1        1:1         *1      0    
+    14        1:1        1:1         *1      0    
+    15        2:0        2:0          0     *1    
+    16        2:0        2:0          0     *1    
+    17        2:0        2:0          0     *1    
+    18        2:0        2:0          0     *1    
+    19        2:0        2:0          0     *1    
+    20        2:0        2:0          0     *1    
+    21        2:0        2:0          0     *1    
+    22        2:0        2:0          0.007 *0.993
+    23        2:0        2:0          0.006 *0.994
+    24        2:0        2:0          0     *1    
+    25        2:0        2:0          0     *1    
+    26        2:0        2:0          0     *1    
+    27        2:0        2:0          0     *1    
+    28        2:0        2:0          0.001 *0.999
+    29        2:0        2:0          0     *1    
+    30        2:0        2:0          0     *1    
+    31        2:0        2:0          0     *1    
+    32        2:0        2:0          0     *1    
+    33        2:0        2:0          0     *1    
+    34        2:0        2:0          0     *1    
+    35        2:0        2:0          0     *1    
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances          35              100      %
+Incorrectly Classified Instances         0                0      %
+Kappa statistic                          1     
+K&B Relative Info Score               3468.4833 %
+K&B Information Score                   33.9016 bits      0.9686 bits/instance
+Class complexity | order 0              33.9977 bits      0.9714 bits/instance
+Class complexity | scheme                0.0962 bits      0.0027 bits/instance
+Complexity improvement     (Sf)         33.9016 bits      0.9686 bits/instance
+Mean absolute error                      0.0019
+Root mean squared error                  0.0086
+Relative absolute error                  0.387  %
+Root relative squared error              1.7476 %
+Total Number of Instances               35     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 1         0          1         1         1          1        1
+                 1         0          1         1         1          1        0
+Weighted Avg.    1         0          1         1         1          1    
+
+=== Confusion Matrix ===
+
+  a  b   <-- classified as
+ 14  0 |  a = 1
+  0 21 |  b = 0
+

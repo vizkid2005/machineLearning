@@ -1,0 +1,121 @@
+=== Run information ===
+
+Scheme:weka.classifiers.functions.Logistic -R 1.0E-8 -M -1
+Relation:     zoo
+Instances:    66
+Attributes:   17
+              feature0
+              feature1
+              feature2
+              feature3
+              feature4
+              feature5
+              feature6
+              feature7
+              feature8
+              feature9
+              feature10
+              feature11
+              feature12
+              feature13
+              feature14
+              feature15
+              feature16
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Logistic Regression with ridge parameter of 1.0E-8
+Coefficients...
+                         Class
+Variable                     1                2                3                4                5                6
+===================================================================================================================
+feature0              -13.4593           3.8102          -0.0007          -2.8095           0.6204          -1.9685
+feature1                9.2967         -16.2142          -0.0005          -2.0143           0.4448          -1.4121
+feature2               16.6583          -4.5072           1.7645          -3.5575          -0.6433          -2.7015
+feature3              -18.2537           3.7115          -0.0007           0.4949           0.6045          -0.0099
+feature4                5.7187          -6.8472          -0.0005          -2.0933           0.4624          -7.8493
+feature5                4.9765           0.3476           3.9603          -3.9925          -3.7443           9.0016
+feature6                1.6723           2.9746          -0.0055           4.6506          -0.6058           7.4515
+feature7              -11.0381           5.8045          -6.2492          -3.6366          -7.3912          -1.0053
+feature8               -8.9586          -8.3923         -10.5881          -8.6317         -11.9768           -3.435
+feature9               -9.6613          -2.9321          -6.0158           7.8075          -9.6036         -12.5272
+feature10               8.0774           4.8073         -10.2604          15.5163           -8.245           5.1989
+feature11              -0.9277          -2.5837          -9.1109          21.0762           -0.421           1.3364
+feature12=0            -3.4209          -2.8654           7.8564            0.439          -4.1565           1.2885
+feature12=2            -3.5743          13.4198           0.0005           2.1352          -0.4715           -1.016
+feature12=4             9.2919          -3.7258           -2.745          -0.8913           8.0012          -0.2183
+feature12=5                  0                0                0                0                0                0
+feature12=6            -8.3513          -8.9221          -0.7255           1.0397          -8.8141          10.9949
+feature12=8            -7.6988          -8.1389         -19.7635         -11.8645         -10.7962         -34.6579
+feature13              -4.0308           -6.246          -7.1398          -5.7982          -0.7417           1.5846
+feature14               -0.166           -2.795          -0.0004          -3.6995            0.421          -3.1295
+feature15              -10.622           0.8585           0.3269          -0.0803           1.8643          -0.3746
+Intercept               5.6101          13.7095          13.4096          -8.4432          12.8675          -0.7958
+
+
+Odds Ratios...
+                         Class
+Variable                     1                2                3                4                5                6
+===================================================================================================================
+feature0                     0          45.1599           0.9993           0.0602           1.8597           0.1397
+feature1            10901.8211                0           0.9995           0.1334           1.5602           0.2436
+feature2         17163195.5201            0.011           5.8387           0.0285           0.5256           0.0671
+feature3                     0          40.9152           0.9993           1.6403           1.8303           0.9902
+feature4              304.5098           0.0011           0.9995           0.1233           1.5879           0.0004
+feature5              144.9722           1.4157          52.4726           0.0185           0.0237        8116.3277
+feature6                5.3246          19.5826           0.9946         104.6428           0.5457        1722.5142
+feature7                     0          331.776           0.0019           0.0263           0.0006           0.3659
+feature8                0.0001           0.0002                0           0.0002                0           0.0322
+feature9                0.0001           0.0533           0.0024        2459.0632           0.0001                0
+feature10            3221.0022         122.4005                0     5478449.2728           0.0003         181.0699
+feature11               0.3954           0.0755           0.0001  1423225554.2004           0.6564           3.8054
+feature12=0             0.0327            0.057        2582.2144           1.5512           0.0157           3.6273
+feature12=2              0.028      673184.1326           1.0005           8.4587           0.6241            0.362
+feature12=4         10850.1859           0.0241           0.0642           0.4101        2984.6348           0.8039
+feature12=5                  1                1                1                1                1                1
+feature12=6             0.0002           0.0001           0.4841           2.8285           0.0001        59571.224
+feature12=8             0.0005           0.0003                0                0                0                0
+feature13               0.0178           0.0019           0.0008            0.003           0.4763           4.8771
+feature14               0.8471           0.0611           0.9996           0.0247           1.5235           0.0437
+feature15                    0           2.3597           1.3867           0.9228           6.4515           0.6875
+
+
+Time taken to build model: 0.31 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances          31               88.5714 %
+Incorrectly Classified Instances         4               11.4286 %
+Kappa statistic                          0.8498
+Mean absolute error                      0.0326
+Root mean squared error                  0.1733
+Relative absolute error                 14.8026 %
+Root relative squared error             52.4401 %
+Total Number of Instances               35     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 1         0          1         1         1          1        1
+                 1         0.036      0.875     1         0.933      1        2
+                 0         0          0         0         0          0.955    3
+                 1         0          1         1         1          1        4
+                 1         0.029      0.5       1         0.667      1        5
+                 1         0.063      0.6       1         0.75       1        6
+                 0.5       0          1         0.5       0.667      1        7
+Weighted Avg.    0.886     0.013      0.869     0.886     0.86       0.997
+
+=== Confusion Matrix ===
+
+  a  b  c  d  e  f  g   <-- classified as
+ 14  0  0  0  0  0  0 |  a = 1
+  0  7  0  0  0  0  0 |  b = 2
+  0  1  0  0  1  0  0 |  c = 3
+  0  0  0  4  0  0  0 |  d = 4
+  0  0  0  0  1  0  0 |  e = 5
+  0  0  0  0  0  3  0 |  f = 6
+  0  0  0  0  0  2  2 |  g = 7
+
+4 out of 35 wrong

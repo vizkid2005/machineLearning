@@ -3,12 +3,12 @@ import sys
 import csv
 import math
 
-trainingSetFileName="zoo-trainSimplified.csv"
-testSetFileName="zoo-testSimplified.csv"
+trainingSetFileName="zoo-train.csv"
+testSetFileName="zoo-test.csv"
 numFeatures=-1
 classIndex=-1
-learningRate=0.0001
-threshold = 0.0015
+learningRate=0.00000001
+threshold = 0.0001
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):

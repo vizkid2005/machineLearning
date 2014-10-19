@@ -1,0 +1,154 @@
+=== Run information ===
+
+Scheme:weka.classifiers.functions.Logistic -R 1.0E-8 -M -1
+Relation:     zoo
+Instances:    66
+Attributes:   17
+              feature0
+              feature1
+              feature2
+              feature3
+              feature4
+              feature5
+              feature6
+              feature7
+              feature8
+              feature9
+              feature10
+              feature11
+              feature12
+              feature13
+              feature14
+              feature15
+              feature16
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Logistic Regression with ridge parameter of 1.0E-8
+Coefficients...
+                               Class
+Variable                           1
+====================================
+feature0                    -58.6466
+feature1                     33.1132
+feature2                     58.6466
+feature3                         -65
+feature4                     28.8039
+feature5                     27.8008
+feature6                       7.963
+feature7                    -38.6195
+feature8                    -31.9091
+feature9                    -34.4118
+feature10                    28.7705
+feature11                   -23.6786
+feature12=0                 -27.8571
+feature12=2                 -19.0125
+feature12=4                  48.7037
+feature12=5                        0
+feature12=6                 -29.7458
+feature12=8                 -27.4219
+feature13                    -10.066
+feature14                    -6.9643
+feature15                   -40.5556
+Intercept                     8.3537
+
+
+Odds Ratios...
+                               Class
+Variable                           1
+====================================
+feature0                           0
+feature1       2.4037168941780825E14
+feature2        2.950542986109831E25
+feature3                           0
+feature4       3.2313514415945073E12
+feature5       1.1850533349230117E12
+feature6                   2872.5717
+feature7                           0
+feature8                           0
+feature9                           0
+feature10       3.125113765076328E12
+feature11                          0
+feature12=0                        0
+feature12=2                        0
+feature12=4    1.4182401199434349E21
+feature12=5                        1
+feature12=6                        0
+feature12=8                        0
+feature13                          0
+feature14                     0.0009
+feature15                          0
+
+
+Time taken to build model: 0.02 seconds
+
+=== Predictions on test split ===
+
+inst#,    actual, predicted, error, probability distribution
+     1        1:1        1:1         *1      0    
+     2        1:1        1:1         *1      0    
+     3        1:1        1:1         *1      0    
+     4        1:1        1:1         *1      0    
+     5        1:1        1:1         *1      0    
+     6        1:1        1:1         *1      0    
+     7        1:1        1:1         *1      0    
+     8        1:1        1:1         *1      0    
+     9        1:1        1:1         *1      0    
+    10        1:1        1:1         *1      0    
+    11        1:1        1:1         *1      0    
+    12        1:1        1:1         *1      0    
+    13        1:1        1:1         *1      0    
+    14        1:1        1:1         *1      0    
+    15        2:0        2:0          0     *1    
+    16        2:0        2:0          0     *1    
+    17        2:0        2:0          0     *1    
+    18        2:0        2:0          0     *1    
+    19        2:0        2:0          0     *1    
+    20        2:0        2:0          0     *1    
+    21        2:0        2:0          0     *1    
+    22        2:0        1:1      +  *1      0    
+    23        2:0        1:1      +  *0.988  0.012
+    24        2:0        2:0          0     *1    
+    25        2:0        2:0          0     *1    
+    26        2:0        2:0          0     *1    
+    27        2:0        2:0          0     *1    
+    28        2:0        2:0          0     *1    
+    29        2:0        2:0          0     *1    
+    30        2:0        2:0          0     *1    
+    31        2:0        2:0          0     *1    
+    32        2:0        2:0          0     *1    
+    33        2:0        2:0          0     *1    
+    34        2:0        2:0          0     *1    
+    35        2:0        2:0          0     *1    
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances          33               94.2857 %
+Incorrectly Classified Instances         2                5.7143 %
+Kappa statistic                          0.8837
+K&B Relative Info Score               3061.5796 %
+K&B Information Score                   29.9244 bits      0.855  bits/instance
+Class complexity | order 0              33.9977 bits      0.9714 bits/instance
+Class complexity | scheme               26.9355 bits      0.7696 bits/instance
+Complexity improvement     (Sf)          7.0622 bits      0.2018 bits/instance
+Mean absolute error                      0.0568
+Root mean squared error                  0.2376
+Relative absolute error                 11.7734 %
+Root relative squared error             48.48   %
+Total Number of Instances               35     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 1         0.095      0.875     1         0.933      1        1
+                 0.905     0          1         0.905     0.95       1        0
+Weighted Avg.    0.943     0.038      0.95      0.943     0.943      1    
+
+=== Confusion Matrix ===
+
+  a  b   <-- classified as
+ 14  0 |  a = 1
+  2 19 |  b = 0
+

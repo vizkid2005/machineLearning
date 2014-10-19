@@ -1,0 +1,158 @@
+=== Run information ===
+
+Scheme:weka.classifiers.bayes.NaiveBayesUpdateable 
+Relation:     zoo
+Instances:    66
+Attributes:   17
+              feature0
+              feature1
+              feature2
+              feature3
+              feature4
+              feature5
+              feature6
+              feature7
+              feature8
+              feature9
+              feature10
+              feature11
+              feature12
+              feature13
+              feature14
+              feature15
+              feature16
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Naive Bayes Classifier
+
+                Class
+Attribute           1      2      3      4      5      6      7
+               (0.38) (0.19) (0.05) (0.14) (0.05) (0.08)  (0.1)
+================================================================
+feature0
+  1               27.0    1.0    1.0    1.0    1.0    3.0    1.0
+  0                2.0   14.0    4.0   10.0    4.0    4.0    7.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature1
+  1                1.0   14.0    1.0    1.0    1.0    1.0    1.0
+  0               28.0    1.0    4.0   10.0    4.0    6.0    7.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature2
+  1                2.0   14.0    3.0   10.0    4.0    6.0    6.0
+  0               27.0    1.0    2.0    1.0    1.0    1.0    2.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature3
+  1               28.0    1.0    1.0    1.0    1.0    1.0    1.0
+  0                1.0   14.0    4.0   10.0    4.0    6.0    7.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature4
+  1                2.0   11.0    1.0    1.0    1.0    5.0    1.0
+  0               27.0    4.0    4.0   10.0    4.0    2.0    7.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature5
+  1                4.0    4.0    2.0   10.0    4.0    1.0    5.0
+  0               25.0   11.0    3.0    1.0    1.0    6.0    3.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature6
+  1               15.0    6.0    4.0    8.0    4.0    2.0    7.0
+  0               14.0    9.0    1.0    3.0    1.0    5.0    1.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature7
+  1               27.0    1.0    4.0   10.0    4.0    1.0    1.0
+  0                2.0   14.0    1.0    1.0    1.0    6.0    7.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature8
+  1               28.0   14.0    4.0   10.0    4.0    1.0    1.0
+  0                1.0    1.0    1.0    1.0    1.0    6.0    7.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature9
+  1               28.0   14.0    3.0    1.0    4.0    6.0    2.0
+  0                1.0    1.0    2.0   10.0    1.0    1.0    6.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature10
+  1                1.0    1.0    3.0    1.0    2.0    2.0    2.0
+  0               28.0   14.0    2.0   10.0    3.0    5.0    6.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature11
+  0               27.0   14.0    4.0    1.0    4.0    6.0    7.0
+  1                2.0    1.0    1.0   10.0    1.0    1.0    1.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature12
+  0                2.0    1.0    4.0   10.0    1.0    1.0    2.0
+  2                4.0   14.0    1.0    1.0    1.0    1.0    1.0
+  4               24.0    1.0    1.0    1.0    4.0    1.0    2.0
+  5                1.0    1.0    1.0    1.0    1.0    1.0    1.0
+  6                1.0    1.0    1.0    1.0    1.0    6.0    3.0
+  8                1.0    1.0    1.0    1.0    1.0    1.0    3.0
+  [total]         33.0   19.0    9.0   15.0    9.0   11.0   12.0
+
+feature13
+  1               23.0   14.0    4.0   10.0    2.0    1.0    2.0
+  0                6.0    1.0    1.0    1.0    3.0    6.0    6.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature14
+  1                6.0    4.0    1.0    2.0    1.0    2.0    1.0
+  0               23.0   11.0    4.0    9.0    4.0    5.0    7.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+feature15
+  1               22.0    4.0    1.0    3.0    1.0    1.0    2.0
+  0                7.0   11.0    4.0    8.0    4.0    6.0    6.0
+  [total]         29.0   15.0    5.0   11.0    5.0    7.0    8.0
+
+
+
+Time taken to build model: 0.01 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances          30               85.7143 %
+Incorrectly Classified Instances         5               14.2857 %
+Kappa statistic                          0.8142
+Mean absolute error                      0.0336
+Root mean squared error                  0.153 
+Relative absolute error                 15.2919 %
+Root relative squared error             46.297  %
+Total Number of Instances               35     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.929     0          1         0.929     0.963      1        1
+                 1         0.036      0.875     1         0.933      1        2
+                 0         0          0         0         0          0.985    3
+                 1         0.032      0.8       1         0.889      1        4
+                 1         0.029      0.5       1         0.667      1        5
+                 1         0.063      0.6       1         0.75       1        6
+                 0.5       0          1         0.5       0.667      1        7
+Weighted Avg.    0.857     0.017      0.846     0.857     0.833      0.999
+
+=== Confusion Matrix ===
+
+  a  b  c  d  e  f  g   <-- classified as
+ 13  0  0  1  0  0  0 |  a = 1
+  0  7  0  0  0  0  0 |  b = 2
+  0  1  0  0  1  0  0 |  c = 3
+  0  0  0  4  0  0  0 |  d = 4
+  0  0  0  0  1  0  0 |  e = 5
+  0  0  0  0  0  3  0 |  f = 6
+  0  0  0  0  0  2  2 |  g = 7
+
+5 wrong out of 35
+
