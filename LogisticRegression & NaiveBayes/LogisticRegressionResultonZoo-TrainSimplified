@@ -1,0 +1,50 @@
+
+E:\College - Fall 2014\Machine Learning\Assignments\machineLearning\LogisticRegression & NaiveBayes>python logisticRegression.py
+[1.2e-05, -6.5e-06, -1.8e-05, 1.35e-05, -6.5e-06, -8.5e-06, -5.5e-06, 5.5e-06, -5e-07, 1.5e-06, -2.4999999999999998e-06, -4e-06, -1e-06, -2.4999999999999998e-06, 0.0, 7.49999999
+[1.2e-05, -6.5e-06, -1.8e-05, 1.35e-05, -6.5e-06, -8.5e-06, -5.5e-06, 5.5e-06, -5e-07, 1.5e-06, -2.4999999999999998e-06, -4e-06, -1e-06, -2.4999999999999998e-06, 0.0, 7.49999999
+Number of Iterations 1
+Evaluating the Test data...
+Printing (actual, predicted)
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+1 1
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+0 0
+Total True positives is  14
+Total True Negatives is  21
+Total False Positives is  0
+Total False Negatives is  0
+
+E:\College - Fall 2014\Machine Learning\Assignments\machineLearning\LogisticRegression & NaiveBayes>
+
+100% Accuracy.

@@ -7,8 +7,8 @@ trainingSetFileName="zoo-train.csv"
 testSetFileName="zoo-test.csv"
 numFeatures=-1
 classIndex=-1
-learningRate=0.00000001
-threshold = 0.0001
+learningRate=0.1
+threshold   =100
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):
