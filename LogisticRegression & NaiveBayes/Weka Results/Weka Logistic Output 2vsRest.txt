@@ -1,0 +1,109 @@
+=== Run information ===
+
+Scheme:weka.classifiers.functions.Logistic -R 1.0E-8 -M -1
+Relation:     zoo
+Instances:    66
+Attributes:   17
+              feature0
+              feature1
+              feature2
+              feature3
+              feature4
+              feature5
+              feature6
+              feature7
+              feature8
+              feature9
+              feature10
+              feature11
+              feature12
+              feature13
+              feature14
+              feature15
+              feature16
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Logistic Regression with ridge parameter of 1.0E-8
+Coefficients...
+                     Class
+Variable                 1
+==========================
+feature0            9.7413
+feature1          -33.7161
+feature2           -0.9253
+feature3            5.7547
+feature4            1.2777
+feature5            3.9232
+feature6            1.7735
+feature7           10.0753
+feature8          -12.0285
+feature9            0.9341
+feature10           4.6343
+feature11          -3.0356
+feature12=0        -5.4232
+feature12=2        12.9911
+feature12=4          1.807
+feature12=5              0
+feature12=6        -18.236
+feature12=8        -6.3757
+feature13          -6.4699
+feature14          -2.7857
+feature15          -5.0877
+Intercept           1.1661
+
+
+Odds Ratios...
+                     Class
+Variable                 1
+==========================
+feature0        17005.4671
+feature1                 0
+feature2            0.3964
+feature3          315.6583
+feature4            3.5883
+feature5           50.5596
+feature6            5.8917
+feature7        23749.9098
+feature8                 0
+feature9            2.5449
+feature10         102.9524
+feature11            0.048
+feature12=0         0.0044
+feature12=2    438486.8327
+feature12=4         6.0921
+feature12=5              1
+feature12=6              0
+feature12=8         0.0017
+feature13           0.0015
+feature14           0.0617
+feature15           0.0062
+
+
+Time taken to build model: 0.14 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances          34               97.1429 %
+Incorrectly Classified Instances         1                2.8571 %
+Kappa statistic                          0.9153
+Mean absolute error                      0.0278
+Root mean squared error                  0.1648
+Relative absolute error                  8.6078 %
+Root relative squared error             41.184  %
+Total Number of Instances               35     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 1         0.036      0.875     1         0.933      1        1
+                 0.964     0          1         0.964     0.982      1        0
+Weighted Avg.    0.971     0.007      0.975     0.971     0.972      1    
+
+=== Confusion Matrix ===
+
+  a  b   <-- classified as
+  7  0 |  a = 1
+  1 27 |  b = 0

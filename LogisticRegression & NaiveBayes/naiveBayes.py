@@ -3,8 +3,8 @@ import sys
 import csv
 import math
 
-trainingSetFileName="zoo-trainSimplified.csv"
-testSetFileName="zoo-testSimplified.csv"
+trainingSetFileName="zoo-train-2vsRest.csv"
+testSetFileName="zoo-test-2vsRest.csv"
 numFeatures=-1
 classIndex=-1
 
