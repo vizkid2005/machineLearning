@@ -3,10 +3,11 @@ import sys
 import csv
 import math
 
-trainingSetFileName="zoo-train-2vsRest.csv"
-testSetFileName="zoo-test-2vsRest.csv"
+trainingSetFileName="zoo-train.csv"
+testSetFileName="zoo-test.csv"
 numFeatures=-1
 classIndex=-1
+classLabelToCompare = "3"
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):
@@ -69,13 +70,13 @@ def handleTestData(inputFileName,lProbabilities,fProbabilities,outputFileName):
 		pLabel = predictLabel(row,lProbabilities,fProbabilities)
 		aLabel = row[classIndex] 
 		print aLabel,pLabel
-		if(aLabel=="1"):
-			if(pLabel=="1"):
+		if(aLabel==classLabelToCompare):
+			if(pLabel==classLabelToCompare):
 				tp+=1
 			else:
 				fn+=1			
 		else:
-			if (pLabel=="1"):
+			if (pLabel==classLabelToCompare):
 				fp+=1
 			else:
 				tn+=1
@@ -152,6 +153,7 @@ def main():
 					featureCounts[key]=1
 	
 	totalCount=len(trainingSet)
+	
 	#compute label Probabilities
 	for key in labelCounts:
 		labelProbabilities[key]=float(labelCounts[key])/totalCount
