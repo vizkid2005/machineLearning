@@ -3,12 +3,13 @@ import sys
 import csv
 import math
 
-trainingSetFileName="zoo-train-2vsRest.csv"
-testSetFileName="zoo-test-2vsRest.csv"
+trainingSetFileName="zoo-train.csv"
+testSetFileName="zoo-test.csv"
 numFeatures=-1
 classIndex=-1
-learningRate=0.001
+learningRate=0.0001
 threshold   =0.001
+classLabelToCompare="1"
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):
@@ -63,13 +64,13 @@ def handleTestData(inputFileName,w,outputFileName):
 		pLabel = predictLabel(row,w)
 		aLabel = row[classIndex] 
 		print aLabel,pLabel
-		if(aLabel=="1"):
-			if(pLabel=="1"):
+		if(aLabel==classLabelToCompare):
+			if(pLabel==classLabelToCompare):
 				tp+=1
 			else:
 				fn+=1			
 		else:
-			if (pLabel=="1"):
+			if (pLabel==classLabelToCompare):
 				fp+=1
 			else:
 				tn+=1
@@ -110,6 +111,11 @@ def main():
 	numFeatures=len(trainingSet[0])-1
 	classIndex=numFeatures
 	
+	#prune datasets...
+	for i in range(len(trainingSet)):
+		if trainingSet[i][classIndex]!=classLabelToCompare:
+			trainingSet[i][classIndex]="0" #replace all other class labels with 0
+
 	#initialize the weight vector to be 0's
 	weightVector = [0 for i in range(0,numFeatures)]	
 	weightVectorBackUp = [0 for i in range(0,numFeatures)]		
