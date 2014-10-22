@@ -7,7 +7,7 @@ trainingSetFileName="zoo-train.csv"
 testSetFileName="zoo-test.csv"
 numFeatures=-1
 classIndex=-1
-classLabelToCompare = "3"
+classLabelToCompare = "4"
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):
@@ -55,7 +55,7 @@ def predictLabel(row,lProbabilities,fProbabilities):
 def handleTestData(inputFileName,lProbabilities,fProbabilities,outputFileName):
 	global numFeatures
 	global classIndex
-	
+	global classLabelToCompare
 	tp=0
 	fp=0
 	tn=0
@@ -92,7 +92,7 @@ def main():
 	global trainingSetFileName
 	global testSetFileName
 	global classIndex
-	
+	global classLabelToCompare
 	
 	trainingSet=readData(trainingSetFileName)
 	if len(trainingSet) <=0:
@@ -121,7 +121,11 @@ def main():
 	#the key will be the label value
 	labelProbabilities={}
 
-	
+	#prune datasets...
+	for i in range(len(trainingSet)):
+		if trainingSet[i][classIndex]!=classLabelToCompare:
+			trainingSet[i][classIndex]=0 #replace all other class labels with 0
+		
 	
 	for row in trainingSet:
 		#count the label occurrences...
