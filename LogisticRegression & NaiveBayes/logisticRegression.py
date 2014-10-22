@@ -7,8 +7,8 @@ trainingSetFileName="zoo-train-2vsRest.csv"
 testSetFileName="zoo-test-2vsRest.csv"
 numFeatures=-1
 classIndex=-1
-learningRate=0.1
-threshold   =100
+learningRate=0.001
+threshold   =0.001
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):
@@ -126,7 +126,7 @@ def main():
 		#update weight vector..
 		for j in range(numFeatures):		
 			weightVector[j]+=learningRate*gradientVector[j]				
-		print weightVector
+		#print weightVector
 		#check whether the increment in weight vector is greater than the "threshold" for every feature...		
 		shouldBreak=True
 		for i in range(numFeatures):
@@ -139,8 +139,9 @@ def main():
 			#take a backup of the weight vector...
 			weightVectorBackUp = [weightVector[i] for i in range(numFeatures)]
 
+	print "Final weight Vector is"
 	print weightVector
-	print "Number of Iterations "+str(iterations) 
+	print "Number of Iterations it took for converging "+str(iterations) 
 	
 	#evaluating the test data...
 	print "Evaluating the Test data..."
