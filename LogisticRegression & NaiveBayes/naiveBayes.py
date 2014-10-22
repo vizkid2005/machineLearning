@@ -33,8 +33,7 @@ def predictLabel(row,lProbabilities,fProbabilities):
 	#init vars
 	maxProb =0
 	maxLabel=""
-	#loop over all possible labels and compute prob for each label.
-	#use decision theory here???? TODO
+	#loop over all possible labels and compute prob for each label.	
 	for label in lProbabilities:
 		currentProb = lProbabilities[label]		
 		for index in range(numFeatures):
@@ -42,17 +41,16 @@ def predictLabel(row,lProbabilities,fProbabilities):
 			currentProb*=fProbabilities[key]
 		if currentProb>maxProb:
 			maxProb=currentProb
-			maxLabel=label
+			maxLabel=label		
 
 	return maxLabel
 
 
 #inputFileName - file name of the test set
 # w is the weight vector.
-#outputFileName - file name for the output.
 #consider 1 as + 
 # ans o as -ve
-def handleTestData(inputFileName,lProbabilities,fProbabilities,outputFileName):
+def handleTestData(inputFileName,lProbabilities,fProbabilities):
 	global numFeatures
 	global classIndex
 	global classLabelToCompare
@@ -124,7 +122,7 @@ def main():
 	#prune datasets...
 	for i in range(len(trainingSet)):
 		if trainingSet[i][classIndex]!=classLabelToCompare:
-			trainingSet[i][classIndex]=0 #replace all other class labels with 0
+			trainingSet[i][classIndex]="0" #replace all other class labels with 0
 		
 	
 	for row in trainingSet:
@@ -159,19 +157,25 @@ def main():
 	totalCount=len(trainingSet)
 	
 	#compute label Probabilities with laplace smoothing
+	print "Printing P(Y)"
 	for key in labelCounts:
 		labelProbabilities[key]=(float(labelCounts[key])+1)/(totalCount+2)
-	
+		print "P(y=",key,") = ",labelProbabilities[key]
 
+	print
+	print "-"*40
 	
 	#compute feature probabilities given class label.
+	print "Printing P(X|Y)"
 	for key in featureCounts:
 		#print featureCounts[key]
 		#print labelCounts[key[2]]	
 		featureProbabilities[key] = float(featureCounts[key])/(labelCounts[key[2]]+len(distinctFeatures[int(key[0])]))
-		print featureProbabilities[key],key
-			
-	#handleTestData(testSetFileName,labelProbabilities,featureProbabilities,"NB-results/output.csv")
+		print "P(x"+key[0]+"="+key[1]+"|y="+key[2]+")"+" = ",featureProbabilities[key]
+	
+	print
+	print "-"*40	
+	handleTestData(testSetFileName,labelProbabilities,featureProbabilities)
 
 			
 #Execution begins here
