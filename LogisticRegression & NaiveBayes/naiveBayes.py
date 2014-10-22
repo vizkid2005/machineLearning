@@ -7,7 +7,7 @@ trainingSetFileName="zoo-train.csv"
 testSetFileName="zoo-test.csv"
 numFeatures=-1
 classIndex=-1
-classLabelToCompare = "4"
+classLabelToCompare = "1"
 
 #this method is used to read the csv file and save it in a list of lists.
 def readData(fileName):
@@ -158,18 +158,22 @@ def main():
 	
 	totalCount=len(trainingSet)
 	
-	#compute label Probabilities
+	#compute label Probabilities with laplace smoothing
 	for key in labelCounts:
-		labelProbabilities[key]=float(labelCounts[key])/totalCount
+		labelProbabilities[key]=(float(labelCounts[key])+1)/(totalCount+2)
 	
+
 	
 	#compute feature probabilities given class label.
 	for key in featureCounts:
-		featureProbabilities[key] = float(featureCounts[key])/labelCounts[key[2]]
+		#print featureCounts[key]
+		#print labelCounts[key[2]]	
+		featureProbabilities[key] = float(featureCounts[key])/(labelCounts[key[2]]+len(distinctFeatures[int(key[0])]))
 		print featureProbabilities[key],key
-		
-	handleTestData(testSetFileName,labelProbabilities,featureProbabilities,"NB-results/output.csv")
+			
+	#handleTestData(testSetFileName,labelProbabilities,featureProbabilities,"NB-results/output.csv")
 
 			
 #Execution begins here
 if __name__ == "__main__" : main()	
+
