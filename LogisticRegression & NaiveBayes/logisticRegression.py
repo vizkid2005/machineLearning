@@ -7,8 +7,8 @@ trainingSetFileName="zoo-train.csv"
 testSetFileName="zoo-test.csv"
 numFeatures=-1
 classIndex=-1
-learningRate=0.0001
-threshold   =0.001
+learningRate=1
+threshold   =0.01
 classLabelToCompare="1"
 
 #this method is used to read the csv file and save it in a list of lists.
