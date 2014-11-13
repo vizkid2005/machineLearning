@@ -20,8 +20,14 @@ def printMatrix(v):
 	print "Printing Value Matrix"
 	print "-"*25
 	print
+	spaces = 20
 	for row in v:
-		print row
+		rowString = ""
+		for col in row:
+			rowString += str(col)
+			tempString = " "*(20-len(str(col)))
+			rowString += tempString
+		print rowString
 
 
 def isWallBlock(i,j):
@@ -51,8 +57,9 @@ def move(a,i,j):
 def copyMatrix(a,b): # copies a to b
 	global rowSize
 	global colSize
+
 	for i in range(rowSize):
-		for j in range(colSize):
+		for j in range(colSize):			
 			b[i][j] = a[i][j]
 
 #The main function that calls all other functions, execution begins here
@@ -68,15 +75,12 @@ def main():
 	liActions.append(actions("right", {"right":0.6, "down":0.4}))
 
 	#init the value matrix
-	value=[ [-100 for b in range(colSize)] for a in range(rowSize)]
+	value=[ [0 for b in range(colSize)] for a in range(rowSize)]
 	
-	#init the goal and pit values.
-	value[1][1] = -50
-	value[0][3] = 10
 	iterations = 0
 	while True:
 		iterations+=1
-		valueBackup =[ [-100 for b in range(colSize)] for a in range(rowSize)]
+		valueBackup =[ [0 for b in range(colSize)] for a in range(rowSize)]
 		copyMatrix(value, valueBackup)
 		for i in range(rowSize):
 			for j in range(colSize):
@@ -86,7 +90,12 @@ def main():
 				#this has four possible actions..
 				maxVal = -10000 
 				for a in liActions:
-					currVal=-1				
+					currVal = -1
+					if (i,j)  == (1,1):
+						currVal = -50
+					elif (i,j) == (0,3):
+						currVal = 10
+									
 					for effect in a.listOfEffects.keys():
 						inew, jnew = move(effect, i, j)	
 						if isWallBlock(i,j):
@@ -107,7 +116,7 @@ def main():
 					shldBreak = False
 		if(shldBreak==True):
 			break
-		break
+		#break
 		
 		
 	print "Number of iterations it took to converge is ", iterations													
