@@ -1,0 +1,34 @@
+Project descritpion:
+We intend to do sentiment classification on movie review dataset. We will be building a classifier which can categorize a review into a +ve review or a negative review. We also wish to analyze the data set using weka and will be comparing our approach with the results given by weka.
+
+Dataset description:
+The url of the datasets we chose is below.
+
+http://www.cs.cornell.edu/people/pabo/movie-review-data/
+
+This has two datasets, one dataset (polarity dataset v2.0) has 1000 +ve and 1000 -ve reviews. The other dataset(sentence polarity dataset v1.0 ) has 5300 + and 5300 -ve reviews. The above datasets are different because one dataset has verbose reviews and the other has reviews which span a maximum of three sentences.
+
+Feature selection:
+We are considering the below two options for the feature selection.
+1) We can choose unigram features (bag of words model). But like the model in [1], we can capture the context information of “not”, by appending “NOT_” to every word followed by a “not” and before a punctuation. So, every feature can be present two times in our dataset.
+2) We can use bigram features, which can capture more context information compared to unigrams. But experiments in [1] suggest that there was no significant improvement using bigrams.
+We can use tf-idf to identify some important features out of all features.
+
+Feature values:
+We have two choices for a feature value, and we will be exploring atleast one of the below.
+1) The “presence” of a feature will have a value of “1”, and “0” otherwise.
+2) A feature value could simply be the frequency (# of occurrences) of the feature.
+
+Smoothing:
+As the dataset is really small, and the possible feature set is really huge, classification would depend a lot on the smoothing. The smoothing here is not straight forward because the number of features is really huge and unknown is unknown. So intend to pick features(unigrams and bigrams) from test dataset as well and use them for smoothing.
+
+Classification:
+We plan to implement either an SVM or logistic regression for the classification part. We can try one of two different kernels in the case of SVM.
+
+Weka:
+We will also be doing all the above the things mentioned using weka. And we are thinking of trying out different algorithms and trying different parameters of the algorithms to gain a greater insight to the algorithms. We will then be reporting both the results obtained by our original implementation and the results given by weka.
+
+Possible extensions (if time permits):
+We can try to implement one of the below extensions to our proposal if time permits.
+1) Stemming the words, and see the effect it causes. (stemming can be done with the help of weka)
+2) We can try n-fold cross validation ( a maximum of 4 folds).
