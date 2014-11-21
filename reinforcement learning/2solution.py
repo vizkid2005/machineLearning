@@ -123,54 +123,65 @@ def main():
 	random.seed()
 	global rowSize
 	global colSize
-	
+	global gamma
+	global alphaConstant
 	acts = ["up", "down", "left", "right"]
 	q = [[{"right":0, "left":0, "up":0, "down":0} for a in range(colSize)] for b in range(rowSize)]  #init the all q(s,a) to 0..
 	
 	s = (rowSize-1, 0) #start at the bottom left 
-	iterations=0
+	numEpisodes=0
+	
 	while True:
-
-		#find out the best action...
-		action=""
-		maxAction = ""
-		maxValue = -1000
-		for key in acts:
-			if q[s[0]][s[1]][key] > maxValue:
-				maxValue = q[s[0]][s[1]][key]
-				maxAction = key		
-
-		val = random.choice(range(2))
-		if val == 0: # choose the action with maximum Q value
-			action = maxAction
-		else:
-			#explore with uniform distribution.
-			val = random.choice(range(3)) # pick any other action with equal chance.
-			i = 0
-			for a in acts:
-				if a == maxAction:									
-					continue
-				elif i==val: 
-					action = a
-					break
-				i+=1
-				
-		inew, jnew, rnew = environment(s[0], s[1], action)
-		maxValNext = -1000
-		for a in acts:
-			if q[inew][jnew][a] > maxValNext:
-				maxValNext = q[inew][jnew][a]
+		shldEpisodeRestart = False
+		while shldEpisodeRestart==False:
 		
-		q[s[0]][s[1]][action] = (1-alphaConstant)*(q[s[0]][s[1]][action]) + alphaConstant*(rnew + gamma*maxValNext)
-		s = (inew, jnew)
-		if s == (0, colSize-1):
-			s = (rowSize-1, 0)
-			iterations+=1	
+			if s==(0, colSize-1): #if the final state is reached, then we can end this episode.
+				shldEpisodeRestart = True
+				
+			#find out the best action...
+			action=""
+			maxAction = ""
+			maxValue = -1000
+			for key in acts:
+				if q[s[0]][s[1]][key] > maxValue:
+					maxValue = q[s[0]][s[1]][key]
+					maxAction = key		
+
+			val = random.choice(range(2))
+			if val == 0: # choose the action with maximum Q value
+				action = maxAction
+			else:
+				#explore with uniform distribution.
+				val = random.choice(range(3)) # pick any other action with equal chance.
+				i = 0
+				for a in acts:
+					if a == maxAction:									
+						continue
+					elif i==val: 
+						action = a
+						break
+					i+=1
+				
+			inew, jnew, rnew = environment(s[0], s[1], action)
+			maxValNext = -1000
+			for a in acts:
+				if q[inew][jnew][a] > maxValNext:
+					maxValNext = q[inew][jnew][a]
+		
+			q[s[0]][s[1]][action] = (1-alphaConstant)*(q[s[0]][s[1]][action]) + alphaConstant*(rnew + gamma*maxValNext)
+			s = (inew, jnew)
+		
+		s = (rowSize-1, 0) #reset the state to start position of the episode.
+		numEpisodes+=1	
 		#s[0] = inew
 		#s[1] = jnew
 		#update iteration count..
 		
-		if iterations>10000:
+		if numEpisodes%10 ==0:
+			#decrement the exploration on every ten episodes.
+			gamma = gamma*0.99999
+		
+		if numEpisodes>10000:
 			break
 				
 	printGrid(q)
