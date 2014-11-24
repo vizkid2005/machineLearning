@@ -57,10 +57,7 @@ def getFeatures(liPosReviews, liNegReviews):
 	liFeatures = list(set(liFeatures))
 	return liFeatures
 
-tempReviews=[]
-
 def doPreProcessing(reviews):
-	global tempReviews
 	#we prepend "not" to add the negation information to all words followed by a "not" and before a punctuation.
 	liPuncts  = [',', ';', '!'] # can we use any other punctuation mark TODO
 		
@@ -90,7 +87,6 @@ def doPreProcessing(reviews):
 	return reviews
 					
 def main():
-	global tempReviews
 	#liPosReviews, liNegReviews = parseDataSetOne()
 	liPosReviews, liNegReviews = parseDataSetTwo() #parse the data set..
 	

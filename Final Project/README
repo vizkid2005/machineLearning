@@ -6,7 +6,7 @@ The url of the datasets we chose is below.
 
 http://www.cs.cornell.edu/people/pabo/movie-review-data/
 
-This has two datasets, one dataset (polarity dataset v2.0) has 1000 +ve and 1000 -ve reviews. The other dataset(sentence polarity dataset v1.0 ) has 5300 + and 5300 -ve reviews. The above datasets are different because one dataset has verbose reviews and the other has reviews which span a maximum of three sentences.
+This has two datasets, one dataset (polarity dataset v2.0) has 1000 +ve and 1000 -ve reviews. The other dataset(sentence polarity dataset v1.0 ) has 5331 + and 5331 -ve reviews. The above datasets are different because one dataset has verbose reviews and the other has reviews which span a maximum of three sentences.
 
 Feature selection:
 We are considering the below two options for the feature selection.
