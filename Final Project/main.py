@@ -40,22 +40,81 @@ def parseDataSetTwo():
 	return (liPosReviews, liNegReviews)
 
 
-
 #ignores punctuations in words..(it is a drawback...)
-def getFeatures(liPosReviews, liNegReviews):	
+def getDocFrequencies(liPosReviews, liNegReviews):	
 	#our features are unigram features...
-	liFeatures = []
+	posWords = []
 	for r in liPosReviews: #get word lists from positive reviews.
 		wordList = re.sub("[^\w]", " ",  r).split() #replace all non-word characters with space, and then split on spaces..		
-		liFeatures.extend(wordList)
+		posWords.extend(list(set(wordList))) #eliminate duplicates in each review.
 	
+	negWords = []
 	for r in liNegReviews: #get word lists from negative reviews..
 		wordList = re.sub("[^\w]", " ",  r).split() #replace all non-word characters with space, and then split on spaces..		
-		liFeatures.extend(wordList)
+		negWords.extend(list(set(wordList)))#eliminate duplicates in each review.
 	
-	#do unique on features..
-	liFeatures = list(set(liFeatures))
-	return liFeatures
+	docFrequencyPos = {}
+	docFrequencyNeg = {}
+	for w in posWords:
+		if w == "NOT":
+			pass
+		if w in docFrequencyPos:
+			docFrequencyPos[w]+=1
+		else:
+			docFrequencyPos[w]=1
+	
+	for w in negWords:
+		if w == "NOT":
+			pass
+		if w in docFrequencyNeg:
+			docFrequencyNeg[w]+=1
+		else:
+			docFrequencyNeg[w]=1			
+	
+	return docFrequencyPos,docFrequencyNeg
+
+thresholdForStopWords = 5
+
+def removeStopWords(liPosReviews, liNegReviews):
+	global thresholdForStopWords
+	dfp, dfn = getDocFrequencies(liPosReviews, liNegReviews) 
+	
+	#convert the frequencies into percentages...
+	for key in dfp:
+		dfp[key] = (dfp[key]*100)/len(liPosReviews)
+		
+	for key in dfn:
+		dfp[key] = (dfn[key]*100)/len(liNegReviews)
+	
+	stopWords = []
+	
+	#remove all those words which occur more than threshold% in both the reviews..
+	#if a term only occurs in one kind of set, then it is fine for us.
+	for w in dfp:
+		fPos = dfp[w]		
+		modW = "NOT"+w		
+		if modW in dfp:
+			fPos += dfp[modW]
+
+		if fPos >= thresholdForStopWords:
+			if w in dfn:
+				fNeg = dfn[w]
+				if modW in dfn:
+					fNeg +=dfn[modW]
+					
+				if fNeg > thresholdForStopWords:
+					stopWords.append(w)
+					stopWords.append(modW)	
+	
+	print "-"*40
+	print "Stop Words removed are:"
+	print "-"*40	
+	print stopWords
+	
+	finalFeatures = [ a for a in dfp if a not in stopWords]
+	finalFeatures.extend([ a for a in dfn if a not in stopWords])
+	
+	print finalFeatures
 
 def doPreProcessing(reviews):
 	#we prepend "not" to add the negation information to all words followed by a "not" and before a punctuation.
@@ -66,7 +125,7 @@ def doPreProcessing(reviews):
 		sentences = reviews[i].split('.') # this is doomed to fail, like in the cases "Mr." and "W.W.E."		
 		for s in sentences:
 			modSen = ""
-			words = s.split(" ")
+			words = s.split()
 			shldPrepend = False
 			for j in range(len(words)):
 				if words[j] == "not": #can we use any other negation word ???? TODO
@@ -76,7 +135,7 @@ def doPreProcessing(reviews):
 					shldPrepend=False
 										
 				elif shldPrepend == True:
-					modSen += "NOT"
+					modSen += "NOT"		
 					
 				modSen += words[j]					
 				modSen += " "
@@ -93,8 +152,8 @@ def main():
 	liPosReviews = doPreProcessing(liPosReviews)
 	liNegReviews = doPreProcessing(liNegReviews)
 	
-	liFeatures = getFeatures(liPosReviews, liNegReviews) 
-	print liFeatures
+	removeStopWords(liPosReviews, liNegReviews)
+	#print liFeatures
 	
 	
 	
