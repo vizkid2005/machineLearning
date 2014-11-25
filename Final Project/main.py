@@ -28,8 +28,8 @@ def parseDataSetOne():
 #contains 5331 positive reviews and same number of negative reviews.
 #contains reviews which are short and more informal than dataset-1.
 def parseDataSetTwo():
-	negativeFile = "datasets/set3/rt-polarity.neg"
-	positiveFile = "datasets/set3/rt-polarity.pos"	
+	negativeFile = "datasets/set2/rt-polarity.neg"
+	positiveFile = "datasets/set2/rt-polarity.pos"	
 	
 	fil = open(positiveFile, "r")
 	liPosReviews = [ a.lower() for a in fil.readlines()]#features are case-insensitive	
