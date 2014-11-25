@@ -28,8 +28,8 @@ def parseDataSetOne():
 #contains 5331 positive reviews and same number of negative reviews.
 #contains reviews which are short and more informal than dataset-1.
 def parseDataSetTwo():
-	negativeFile = "datasets/set2/rt-polarity.neg"
-	positiveFile = "datasets/set2/rt-polarity.pos"	
+	negativeFile = "datasets/set3/rt-polarity.neg"
+	positiveFile = "datasets/set3/rt-polarity.pos"	
 	
 	fil = open(positiveFile, "r")
 	liPosReviews = [ a.lower() for a in fil.readlines()]#features are case-insensitive	
@@ -73,7 +73,7 @@ def getDocFrequencies(liPosReviews, liNegReviews):
 	
 	return docFrequencyPos,docFrequencyNeg
 
-thresholdForStopWords = 5
+thresholdForStopWords = 10
 
 def removeStopWords(liPosReviews, liNegReviews):
 	global thresholdForStopWords
@@ -91,30 +91,36 @@ def removeStopWords(liPosReviews, liNegReviews):
 	#remove all those words which occur more than threshold% in both the reviews..
 	#if a term only occurs in one kind of set, then it is fine for us.
 	for w in dfp:
-		fPos = dfp[w]		
-		modW = "NOT"+w		
-		if modW in dfp:
-			fPos += dfp[modW]
+		if w not in stopWords:
+			fPos = dfp[w]		
+			modW = "NOT"+w		
+			if modW in dfp:
+				fPos += dfp[modW]
 
-		if fPos >= thresholdForStopWords:
-			if w in dfn:
-				fNeg = dfn[w]
-				if modW in dfn:
-					fNeg +=dfn[modW]
+			if fPos >= thresholdForStopWords:
+				if w in dfn:
+					fNeg = dfn[w]
+					if modW in dfn:
+						fNeg +=dfn[modW]
 					
-				if fNeg > thresholdForStopWords:
-					stopWords.append(w)
-					stopWords.append(modW)	
+					if fNeg > thresholdForStopWords:
+						stopWords.append(w)
+						stopWords.append(modW)	
 	
 	print "-"*40
 	print "Stop Words removed are:"
 	print "-"*40	
-	print stopWords
+	tempList = []
+	for s in stopWords:
+		if "NOT" not in s:
+			tempList.append(s)
+			
+	print tempList
 	
 	finalFeatures = [ a for a in dfp if a not in stopWords]
 	finalFeatures.extend([ a for a in dfn if a not in stopWords])
 	
-	print finalFeatures
+	return list(set(finalFeatures)) #remove duplicate features.
 
 def doPreProcessing(reviews):
 	#we prepend "not" to add the negation information to all words followed by a "not" and before a punctuation.
@@ -145,17 +151,47 @@ def doPreProcessing(reviews):
 	
 	return reviews
 					
-def main():
-	#liPosReviews, liNegReviews = parseDataSetOne()
-	liPosReviews, liNegReviews = parseDataSetTwo() #parse the data set..
+					
+def buildDataVectors(isDataSet1 = False):
+	liPosReviews = []
+	liNegReviews = []
+		
+	if isDataSet1==True:
+		liPosReviews, liNegReviews = parseDataSetOne()
+	else:
+		liPosReviews, liNegReviews = parseDataSetTwo() #parse the data set..
 	
 	liPosReviews = doPreProcessing(liPosReviews)
 	liNegReviews = doPreProcessing(liNegReviews)
 	
-	removeStopWords(liPosReviews, liNegReviews)
+	liFeatures = removeStopWords(liPosReviews, liNegReviews)
 	#print liFeatures
+	#build data vectors...
+	vectors = []
+	for r in liPosReviews:
+		temp = []
+		words = r.split()
+		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
+		if len(temp)!=0:
+			temp.append("POSITIVE") #this is the assumed class label for a +ve review.
+			vectors.append(temp)
+		
+	for r in liNegReviews:
+		temp = []
+		words = r.split()
+		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
+		if len(temp)!=0:
+			temp.append("NEGATIVE") #this is the assumed class label for a -ve review.
+			vectors.append(temp)
 	
+	print vectors
 	
+	return liFeatures,vectors
+					
+def main():
+	#builds the data vectors for both datasets..
+	buildDataVectors(False)
 	
+	#buildDataVectors(True)
 	
 if __name__ == "__main__" : main()	
