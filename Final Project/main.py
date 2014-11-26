@@ -3,13 +3,27 @@ import os
 import sys
 import re
 
+class Type():
+	complete = 1
+	training = 2
+	test = 3
+
 #this dataset has 1000 +ves and 1000-ves.
 #this dataset has verbose reviews..
-def parseDataSetOne():
-	dirPositive = "datasets/set1/pos"
+def parseDataSetOne(type1):
+	dirPositive = ""
+	dirNegative = ""
+	if type1 == Type.complete:
+		dirPositive = "datasets/set1/pos"
+		dirNegative = "datasets/set1/neg"
+	elif type1 == Type.training:
+		dirPositive = "training/set1/pos"
+		dirNegative = "training/set1/neg"		
+	else:
+		dirPositive = "test/set1/pos"
+		dirNegative = "test/set1/neg"				
+
 	liPositiveFiles = os.listdir(dirPositive)
-	
-	dirNegative = "datasets/set1/neg"
 	liNegativeFiles = os.listdir(dirNegative)
 	
 	liPosReviews = []
@@ -27,9 +41,19 @@ def parseDataSetOne():
 
 #contains 5331 positive reviews and same number of negative reviews.
 #contains reviews which are short and more informal than dataset-1.
-def parseDataSetTwo():
-	negativeFile = "datasets/set2/rt-polarity.neg"
-	positiveFile = "datasets/set2/rt-polarity.pos"	
+def parseDataSetTwo(type1):
+	negativeFile = ""
+	positiveFile = ""	
+	
+	if type1 == Type.complete:
+		negativeFile = "datasets/set2/rt-polarity.neg"
+		positiveFile = "datasets/set2/rt-polarity.pos"	
+	elif type1 == Type.training:
+		negativeFile = "training/set2/rt-polarity.neg"
+		positiveFile = "training/set2/rt-polarity.pos"	
+	else:
+		negativeFile = "test/set2/rt-polarity.neg"
+		positiveFile = "test/set2/rt-polarity.pos"		
 	
 	fil = open(positiveFile, "r")
 	liPosReviews = [ a.lower() for a in fil.readlines()]#features are case-insensitive	
@@ -56,20 +80,18 @@ def getDocFrequencies(liPosReviews, liNegReviews):
 	docFrequencyPos = {}
 	docFrequencyNeg = {}
 	for w in posWords:
-		if w == "NOT":
-			pass
-		if w in docFrequencyPos:
-			docFrequencyPos[w]+=1
-		else:
-			docFrequencyPos[w]=1
+		if len(w) > 2 and w != "NOT":
+			if w in docFrequencyPos:
+				docFrequencyPos[w]+=1
+			else:
+				docFrequencyPos[w]=1
 	
 	for w in negWords:
-		if w == "NOT":
-			pass
-		if w in docFrequencyNeg:
-			docFrequencyNeg[w]+=1
-		else:
-			docFrequencyNeg[w]=1			
+		if len(w) > 2 and w != "NOT":
+			if w in docFrequencyNeg:
+				docFrequencyNeg[w]+=1
+			else:
+				docFrequencyNeg[w]=1			
 	
 	return docFrequencyPos,docFrequencyNeg
 
@@ -91,21 +113,10 @@ def removeStopWords(liPosReviews, liNegReviews):
 	#remove all those words which occur more than threshold% in both the reviews..
 	#if a term only occurs in one kind of set, then it is fine for us.
 	for w in dfp:
-		if w not in stopWords:
-			fPos = dfp[w]		
-			modW = "NOT"+w		
-			if modW in dfp:
-				fPos += dfp[modW]
-
-			if fPos >= thresholdForStopWords:
-				if w in dfn:
-					fNeg = dfn[w]
-					if modW in dfn:
-						fNeg +=dfn[modW]
-					
-					if fNeg > thresholdForStopWords:
+		if w not in stopWords:	
+			if dfp[w] >= thresholdForStopWords:
+					if w in dfn and dfn[w] > thresholdForStopWords:
 						stopWords.append(w)
-						stopWords.append(modW)	
 	
 	print "-"*40
 	print "Stop Words removed are:"
@@ -156,41 +167,69 @@ def buildDataVectors(isDataSet1 = False):
 	liPosReviews = []
 	liNegReviews = []
 		
+	trainPosReviews = []
+	trainNegReviews = []
+	testPosReviews = []
+	testNegReviews = []
+		
 	if isDataSet1==True:
-		liPosReviews, liNegReviews = parseDataSetOne()
+		liPosReviews, liNegReviews = parseDataSetOne(Type.complete)
+		trainPosReviews, trainNegReviews = parseDataSetOne(Type.training)
+		testPosReviews, testNegReviews = parseDataSetOne(Type.test)
 	else:
-		liPosReviews, liNegReviews = parseDataSetTwo() #parse the data set..
+		liPosReviews, liNegReviews = parseDataSetTwo(Type.complete) #parse the data set..
+		trainPosReviews, trainNegReviews = parseDataSetTwo(Type.training)
+		testPosReviews, testNegReviews = parseDataSetTwo(Type.test)
+		
 	
 	liPosReviews = doPreProcessing(liPosReviews)
 	liNegReviews = doPreProcessing(liNegReviews)
-	
 	liFeatures = removeStopWords(liPosReviews, liNegReviews)
-	#print liFeatures
+		
+	#pre process the data...
+
+	trainPosReviews = doPreProcessing(trainPosReviews)
+	trainNegReviews = doPreProcessing(trainNegReviews)
+	testPosReviews = doPreProcessing(testPosReviews)
+	testNegReviews = doPreProcessing(testNegReviews)
+		
 	#build data vectors...
-	vectors = []
-	for r in liPosReviews:
-		temp = []
-		words = r.split()
+	trainVectors = []
+	testVectors = []
+	for r in trainPosReviews:
+		words = list(set(r.split()))
 		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
 		if len(temp)!=0:
 			temp.append("POSITIVE") #this is the assumed class label for a +ve review.
-			vectors.append(temp)
+			trainVectors.append(temp)
 		
-	for r in liNegReviews:
-		temp = []
-		words = r.split()
+	for r in trainNegReviews:
+		words = list(set(r.split()))
 		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
 		if len(temp)!=0:
 			temp.append("NEGATIVE") #this is the assumed class label for a -ve review.
-			vectors.append(temp)
+			trainVectors.append(temp)
 	
-	print vectors
+	for r in testPosReviews:
+		words = list(set(r.split()))
+		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
+		if len(temp)!=0:
+			temp.append("POSITIVE") #this is the assumed class label for a +ve review.
+			testVectors.append(temp)
+		
+	for r in testNegReviews:
+		words = list(set(r.split()))
+		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
+		if len(temp)!=0:
+			temp.append("NEGATIVE") #this is the assumed class label for a -ve review.
+			testVectors.append(temp)
 	
-	return liFeatures,vectors
+	return liFeatures,trainVectors, testVectors
 					
 def main():
 	#builds the data vectors for both datasets..
-	buildDataVectors(False)
+	liFeatures,trainVectors, testVectors = buildDataVectors(False)	
+	#print testVectors[0], len(testVectors)
 	
 	#buildDataVectors(True)
 	
