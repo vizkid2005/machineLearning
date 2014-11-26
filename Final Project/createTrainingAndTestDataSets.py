@@ -59,8 +59,35 @@ def partitionForDataSet2():
 	posTrainingFile.close()
 	posTestFile.close()
 	negTestFile.close()
+
+
+def partitionForDataSet3():
+	posReviews =[ a for a in  open("datasets/set3/rt-polarity.pos","r").readlines()]
+	negReviews =[ a for a in  open("datasets/set3/rt-polarity.neg","r").readlines()]
+	
+	posTrainingFile = open("training/set3/rt-polarity.pos","w")
+	negTrainingFile = open("training/set3/rt-polarity.neg","w")
+
+	posTestFile = open("test/set3/rt-polarity.pos","w")
+	negTestFile = open("test/set3/rt-polarity.neg","w")
+	
+	count = len(posReviews)
+	
+	#we will use 4 parts for training and 1 part for testing...
+	for i in range(count):
+		if i < (4*count)/5:
+			posTrainingFile.write(posReviews[i])
+			negTrainingFile.write(negReviews[i])
+		else:
+			posTestFile.write(posReviews[i])
+			negTestFile.write(negReviews[i])			
+
+	negTrainingFile.close()
+	posTrainingFile.close()
+	posTestFile.close()
+	negTestFile.close()
 	 
 #partitionForDataSet2()
 #partitionForDataSet1()
-			
+#partitionForDataSet3()
 			

@@ -8,6 +8,11 @@ class Type():
 	training = 2
 	test = 3
 
+class DataSet():
+	One = 1
+	Two = 2
+	Three = 3
+
 #this dataset has 1000 +ves and 1000-ves.
 #this dataset has verbose reviews..
 def parseDataSetOne(type1):
@@ -54,6 +59,29 @@ def parseDataSetTwo(type1):
 	else:
 		negativeFile = "test/set2/rt-polarity.neg"
 		positiveFile = "test/set2/rt-polarity.pos"		
+	
+	fil = open(positiveFile, "r")
+	liPosReviews = [ a.lower() for a in fil.readlines()]#features are case-insensitive	
+		
+	fil = open(negativeFile, "r")
+	liNegReviews = [a.lower() for a in fil.readlines()] #features are case-insensitive
+	
+	return (liPosReviews, liNegReviews)
+
+#this data set is only for testing purposes..
+def parseDataSetThree(type1):
+	negativeFile = ""
+	positiveFile = ""	
+	
+	if type1 == Type.complete:
+		negativeFile = "datasets/set3/rt-polarity.neg"
+		positiveFile = "datasets/set3/rt-polarity.pos"	
+	elif type1 == Type.training:
+		negativeFile = "training/set3/rt-polarity.neg"
+		positiveFile = "training/set3/rt-polarity.pos"	
+	else:
+		negativeFile = "test/set3/rt-polarity.neg"
+		positiveFile = "test/set3/rt-polarity.pos"		
 	
 	fil = open(positiveFile, "r")
 	liPosReviews = [ a.lower() for a in fil.readlines()]#features are case-insensitive	
@@ -163,7 +191,7 @@ def doPreProcessing(reviews):
 	return reviews
 					
 					
-def buildDataVectors(isDataSet1 = False):
+def buildDataVectors(ds):
 	liPosReviews = []
 	liNegReviews = []
 		
@@ -172,15 +200,18 @@ def buildDataVectors(isDataSet1 = False):
 	testPosReviews = []
 	testNegReviews = []
 		
-	if isDataSet1==True:
+	if ds == DataSet.One:
 		liPosReviews, liNegReviews = parseDataSetOne(Type.complete)
 		trainPosReviews, trainNegReviews = parseDataSetOne(Type.training)
 		testPosReviews, testNegReviews = parseDataSetOne(Type.test)
-	else:
+	elif ds == DataSet.Two:
 		liPosReviews, liNegReviews = parseDataSetTwo(Type.complete) #parse the data set..
 		trainPosReviews, trainNegReviews = parseDataSetTwo(Type.training)
 		testPosReviews, testNegReviews = parseDataSetTwo(Type.test)
-		
+	else:
+		liPosReviews, liNegReviews = parseDataSetThree(Type.complete) #parse the data set..
+		trainPosReviews, trainNegReviews = parseDataSetThree(Type.training)
+		testPosReviews, testNegReviews = parseDataSetThree(Type.test)	
 	
 	liPosReviews = doPreProcessing(liPosReviews)
 	liNegReviews = doPreProcessing(liNegReviews)
@@ -228,7 +259,7 @@ def buildDataVectors(isDataSet1 = False):
 					
 def main():
 	#builds the data vectors for both datasets..
-	liFeatures,trainVectors, testVectors = buildDataVectors(False)	
+	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Three)	
 	#print testVectors[0], len(testVectors)
 	
 	#buildDataVectors(True)
