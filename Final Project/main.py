@@ -2,6 +2,7 @@
 import os
 import sys
 import re
+import logisticRegression
 
 class Type():
 	complete = 1
@@ -123,7 +124,7 @@ def getDocFrequencies(liPosReviews, liNegReviews):
 	
 	return docFrequencyPos,docFrequencyNeg
 
-thresholdForStopWords = 10
+thresholdForStopWords = 5
 
 def removeStopWords(liPosReviews, liNegReviews):
 	global thresholdForStopWords
@@ -189,7 +190,10 @@ def doPreProcessing(reviews):
 		reviews[i] = finalReview
 	
 	return reviews
-					
+	
+def removeStopWordsUsingIG(liPosReviews, liNegReviews):
+	#TODO	
+	return
 					
 def buildDataVectors(ds):
 	liPosReviews = []
@@ -201,67 +205,72 @@ def buildDataVectors(ds):
 	testNegReviews = []
 		
 	if ds == DataSet.One:
-		liPosReviews, liNegReviews = parseDataSetOne(Type.complete)
 		trainPosReviews, trainNegReviews = parseDataSetOne(Type.training)
 		testPosReviews, testNegReviews = parseDataSetOne(Type.test)
 	elif ds == DataSet.Two:
-		liPosReviews, liNegReviews = parseDataSetTwo(Type.complete) #parse the data set..
 		trainPosReviews, trainNegReviews = parseDataSetTwo(Type.training)
 		testPosReviews, testNegReviews = parseDataSetTwo(Type.test)
-	else:
-		liPosReviews, liNegReviews = parseDataSetThree(Type.complete) #parse the data set..
+	else:	
 		trainPosReviews, trainNegReviews = parseDataSetThree(Type.training)
 		testPosReviews, testNegReviews = parseDataSetThree(Type.test)	
 	
-	liPosReviews = doPreProcessing(liPosReviews)
-	liNegReviews = doPreProcessing(liNegReviews)
-	liFeatures = removeStopWords(liPosReviews, liNegReviews)
-		
 	#pre process the data...
-
 	trainPosReviews = doPreProcessing(trainPosReviews)
 	trainNegReviews = doPreProcessing(trainNegReviews)
 	testPosReviews = doPreProcessing(testPosReviews)
 	testNegReviews = doPreProcessing(testNegReviews)
-		
+
+	liPosReviews = []
+	liPosReviews.extend(trainPosReviews)
+	liPosReviews.extend(testPosReviews)
+
+	liNegReviews = []
+	liNegReviews.extend(trainNegReviews)
+	liNegReviews.extend(testNegReviews)
+	
+	liFeatures = removeStopWords(liPosReviews, liNegReviews)
+				
 	#build data vectors...
 	trainVectors = []
 	testVectors = []
+	fDict = {}
+	for f in liFeatures:
+		fDict[f] = 1
+		
 	for r in trainPosReviews:
 		words = list(set(r.split()))
-		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
+		temp = [a for a in words if a in fDict] # we are checking only feature presence here.. can also try advanced stuff TODO
 		if len(temp)!=0:
 			temp.append("POSITIVE") #this is the assumed class label for a +ve review.
 			trainVectors.append(temp)
 		
 	for r in trainNegReviews:
 		words = list(set(r.split()))
-		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
+		temp = [a for a in words if a in fDict] # we are checking only feature presence here.. can also try advanced stuff TODO
 		if len(temp)!=0:
 			temp.append("NEGATIVE") #this is the assumed class label for a -ve review.
 			trainVectors.append(temp)
 	
 	for r in testPosReviews:
 		words = list(set(r.split()))
-		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
-		if len(temp)!=0:
-			temp.append("POSITIVE") #this is the assumed class label for a +ve review.
-			testVectors.append(temp)
+		temp = [a for a in words if a in fDict] # we are checking only feature presence here.. can also try advanced stuff TODO
+		temp.append("POSITIVE") #this is the assumed class label for a +ve review.
+		testVectors.append(temp)
 		
 	for r in testNegReviews:
 		words = list(set(r.split()))
-		temp = [a for a in words if a in liFeatures] # we are checking only feature presence here.. can also try advanced stuff TODO
-		if len(temp)!=0:
-			temp.append("NEGATIVE") #this is the assumed class label for a -ve review.
-			testVectors.append(temp)
+		temp = [a for a in words if a in fDict] # we are checking only feature presence here.. can also try advanced stuff TODO
+
+		temp.append("NEGATIVE") #this is the assumed class label for a -ve review.
+		testVectors.append(temp)
 	
-	return liFeatures,trainVectors, testVectors
-					
+	return liFeatures,trainVectors, testVectors						
+	
 def main():
 	#builds the data vectors for both datasets..
-	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Three)	
+	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Two)	
+
 	#print testVectors[0], len(testVectors)
-	
-	#buildDataVectors(True)
+	logisticRegression.runLogisticRegression(liFeatures, trainVectors, testVectors)
 	
 if __name__ == "__main__" : main()	
