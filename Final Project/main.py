@@ -36,13 +36,8 @@ def parseDataSetOne(type1):
 	
 	for f in liPositiveFiles:
 		fil = open(dirPositive+"/"+f, "r")
-
 		liPosReviews.append(fil.read().lower()) #features are case insensitive.. (another draw back ?)
-		'''I don't think so, words are more useful than their case. 
-		   However, excessive capitalization of words may indicate positive sentiment. Eg. WOW !! YAYY !!! 
-		   We can try coutning the number of capitalized words per sentence normalized by the length of the review
-		'''
-
+		
 	for f in liNegativeFiles:
 		fil = open(dirNegative+"/"+f, "r")
 		liNegReviews.append(fil.read().lower())	
@@ -96,13 +91,6 @@ def parseDataSetThree(type1):
 	
 	return (liPosReviews, liNegReviews)
 
-def getStopWordList():
-	stopList = []
-	stopWordFileName = "stopwordslist.txt"
-	fil = open(stopWordFileName, "r")
-	stopList = [a.lower() for a in fil.readlines()]
-	return stopList
-
 
 #ignores punctuations in words..(it is a drawback...)
 def getDocFrequencies(liPosReviews, liNegReviews):	
@@ -148,16 +136,16 @@ def removeStopWords(liPosReviews, liNegReviews):
 	for key in dfn:
 		dfp[key] = (dfn[key]*100)/len(liNegReviews)
 	
-	stopWords = getStopWordList()
+	stopWords = []
 	
 	#remove all those words which occur more than threshold% in both the reviews..
 	#if a term only occurs in one kind of set, then it is fine for us.
-	'''for w in dfp:
+	for w in dfp:
 		if w not in stopWords:	
 			if dfp[w] >= thresholdForStopWords:
 					if w in dfn and dfn[w] > thresholdForStopWords:
 						stopWords.append(w)
-	'''
+	
 	print "-"*40
 	print "Stop Words removed are:"
 	print "-"*40	
@@ -173,7 +161,6 @@ def removeStopWords(liPosReviews, liNegReviews):
 	
 	return list(set(finalFeatures)) #remove duplicate features.
 
-#The NOT is getting appended to unnecessary places, CHECK
 def doPreProcessing(reviews):
 	#we prepend "not" to add the negation information to all words followed by a "not" and before a punctuation.
 	liPuncts  = [',', ';', '!'] # can we use any other punctuation mark TODO
@@ -202,7 +189,8 @@ def doPreProcessing(reviews):
 		reviews[i] = finalReview
 	
 	return reviews
-							
+					
+					
 def buildDataVectors(ds):
 	liPosReviews = []
 	liNegReviews = []
@@ -228,25 +216,13 @@ def buildDataVectors(ds):
 	liPosReviews = doPreProcessing(liPosReviews)
 	liNegReviews = doPreProcessing(liNegReviews)
 	liFeatures = removeStopWords(liPosReviews, liNegReviews)
-	'''
-	print "*"*40
-	print "List of positive reviews"
-	print "*"*40
-	for a in range(0,len(liPosReviews)):
-		print liPosReviews[a]
-	'''	
+		
 	#pre process the data...
 
 	trainPosReviews = doPreProcessing(trainPosReviews)
 	trainNegReviews = doPreProcessing(trainNegReviews)
 	testPosReviews = doPreProcessing(testPosReviews)
 	testNegReviews = doPreProcessing(testNegReviews)
-
-	print "*"*40
-	print "List of Train dataset reviews"
-	print "*"*40
-	for a in range(0,2):
-		print liPosReviews[a]
 		
 	#build data vectors...
 	trainVectors = []
@@ -283,7 +259,7 @@ def buildDataVectors(ds):
 					
 def main():
 	#builds the data vectors for both datasets..
-	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.One)	
+	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Three)	
 	#print testVectors[0], len(testVectors)
 	
 	#buildDataVectors(True)

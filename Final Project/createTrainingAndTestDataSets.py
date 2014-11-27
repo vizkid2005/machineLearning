@@ -32,6 +32,8 @@ def partitionForDataSet1():
 			shutil.copy(posPath+posFiles[i], posTestPath+posFiles[i])
 			shutil.copy(negPath+negFiles[i], negTestPath+negFiles[i])
 
+
+
 def partitionForDataSet2():
 	posReviews =[ a for a in  open("datasets/set2/rt-polarity.pos","r").readlines()]
 	negReviews =[ a for a in  open("datasets/set2/rt-polarity.neg","r").readlines()]
