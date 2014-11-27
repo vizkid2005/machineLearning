@@ -37,13 +37,8 @@ def parseDataSetOne(type1):
 	
 	for f in liPositiveFiles:
 		fil = open(dirPositive+"/"+f, "r")
-
 		liPosReviews.append(fil.read().lower()) #features are case insensitive.. (another draw back ?)
-		'''I don't think so, words are more useful than their case. 
-		   However, excessive capitalization of words may indicate positive sentiment. Eg. WOW !! YAYY !!! 
-		   We can try coutning the number of capitalized words per sentence normalized by the length of the review
-		'''
-
+		
 	for f in liNegativeFiles:
 		fil = open(dirNegative+"/"+f, "r")
 		liNegReviews.append(fil.read().lower())	
@@ -97,6 +92,7 @@ def parseDataSetThree(type1):
 	
 	return (liPosReviews, liNegReviews)
 
+
 #ignores punctuations in words..(it is a drawback...)
 def getDocFrequencies(liPosReviews, liNegReviews):	
 	#our features are unigram features...
@@ -140,6 +136,7 @@ def removeStopWords(liPosReviews, liNegReviews):
 		
 	for key in dfn:
 		dfp[key] = (dfn[key]*100)/len(liNegReviews)
+	
 	stopWords = []	
 	#remove all those words which occur more than threshold% in both the reviews..
 	#if a term only occurs in one kind of set, then it is fine for us.
@@ -164,7 +161,6 @@ def removeStopWords(liPosReviews, liNegReviews):
 	
 	return list(set(finalFeatures)) #remove duplicate features.
 
-#The NOT is getting appended to unnecessary places, CHECK
 def doPreProcessing(reviews):
 	#we prepend "not" to add the negation information to all words followed by a "not" and before a punctuation.
 	liPuncts  = [',', ';', '!'] # can we use any other punctuation mark TODO
