@@ -90,10 +90,7 @@ def runLogisticRegression(liFeatures, trainVectors, testVectors):
 	iterations=0
 	
 	while True: 
-		iterations+=1
-		if iterations >100:
-			break
-		
+		iterations+=1		
 		#init gradient vector...
 		gradientVector = {}
 		for key in weightVector:
@@ -129,7 +126,6 @@ def runLogisticRegression(liFeatures, trainVectors, testVectors):
 			for key in weightVector:
 				weightVectorBackUp[key] = weightVector[key]
 
-	print "Final weight Vector is"
 	#print weightVector
 	print "Number of Iterations it took for converging "+str(iterations) 
 	

@@ -3,6 +3,7 @@ import os
 import sys
 import re
 import logisticRegression
+import naiveBayes
 
 class Type():
 	complete = 1
@@ -214,6 +215,12 @@ def buildDataVectors(ds):
 		trainPosReviews, trainNegReviews = parseDataSetThree(Type.training)
 		testPosReviews, testNegReviews = parseDataSetThree(Type.test)	
 
+	#remove empty lines..
+	trainPosReviews = [a for a in trainPosReviews if a.isspace() == False]
+	trainNegReviews = [a for a in trainNegReviews if a.isspace() == False]
+	testPosReviews = [a for a in testPosReviews if a.isspace() == False]
+	testNegReviews = [a for a in testNegReviews if a.isspace() == False]
+		
 	#pre process the data...
 	trainPosReviews = doPreProcessing(trainPosReviews)
 	trainNegReviews = doPreProcessing(trainNegReviews)
@@ -270,6 +277,6 @@ def main():
 	#builds the data vectors for both datasets..
 	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Three)	
 	#print testVectors[0], len(testVectors)
-	logisticRegression.runLogisticRegression(liFeatures, trainVectors, testVectors)
-	
+	#logisticRegression.runLogisticRegression(liFeatures, trainVectors, testVectors)
+	naiveBayes.runNaiveBayes(liFeatures, trainVectors, testVectors)
 if __name__ == "__main__" : main()	
