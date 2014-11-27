@@ -4,6 +4,7 @@ import sys
 import re
 import logisticRegression
 import naiveBayes
+from math import log
 
 class Type():
 	complete = 1
@@ -125,42 +126,119 @@ def getDocFrequencies(liPosReviews, liNegReviews):
 	
 	return docFrequencyPos,docFrequencyNeg
 
-thresholdForStopWords = 5
+class FeatureSelection():
+	DocFrequency = 1
+	InformationGain = 2
 
-def removeStopWords(liPosReviews, liNegReviews):
-	global thresholdForStopWords
-	dfp, dfn = getDocFrequencies(liPosReviews, liNegReviews) 
-	
+def getStopWordsUsingDocFrequency(dfp, dfn):
+	thresholdForStopWords = 0.05 #means 5 %..
 	#convert the frequencies into percentages...
 	for key in dfp:
-		dfp[key] = (dfp[key]*100)/len(liPosReviews)
+		dfp[key] = dfp[key]/len(liPosReviews)
 		
 	for key in dfn:
-		dfp[key] = (dfn[key]*100)/len(liNegReviews)
-	
-	stopWords = []	
+		dfp[key] = dfn[key]/len(liNegReviews)
 	#remove all those words which occur more than threshold% in both the reviews..
 	#if a term only occurs in one kind of set, then it is fine for us.
+	stopWords = []
 	for w in dfp:
 		if w not in stopWords:	
 			if dfp[w] >= thresholdForStopWords:
 					if w in dfn and dfn[w] > thresholdForStopWords:
 						stopWords.append(w)
+							
+	return stopWords
+
+def removeStopWords(liPosReviews, liNegReviews, algo):	
+	stopWords = []
+	dfp, dfn = getDocFrequencies(liPosReviews, liNegReviews) 	
+	
+	if algo == 	FeatureSelection.DocFrequency:
+		stopWords = getStopWordsUsingDocFrequency(dfp, dfn)
+	elif algo == FeatureSelection.InformationGain:
+		stopWords = getStopWordsUsingIG(dfp, dfn, liPosReviews, liNegReviews)
+				
 	
 	print "-"*40
 	print "Stop Words removed are:"
 	print "-"*40	
 	tempList = []
 	for s in stopWords:
-		if "NOT" not in s:
+		if "NOT" != s[0:3]:
 			tempList.append(s)
-			
-	print tempList
-	
+	print tempList				
+				
 	finalFeatures = [ a for a in dfp if a not in stopWords]
 	finalFeatures.extend([ a for a in dfn if a not in stopWords])
+			
+	return list(set(finalFeatures))#remove duplicate features.	
+
+def getStopWordsUsingIG(dfp, dfn, liPosReviews, liNegReviews):
+	threshold = 0.1
+	stopWords = []
+	totalWords = [a for a in dfp]
+	totalWords.extend([a for a in dfn])
+	totalWords = list(set(totalWords)) #remove duplicates..
 	
-	return list(set(finalFeatures)) #remove duplicate features.
+	totalPos = len(liPosReviews)
+	totalNeg = len(liNegReviews)
+		
+	liIg = {}
+	for word in totalWords:
+		currentEntropy = 0.5 # we have equal separation of +ve and -ves..
+		wordCount = 0
+		posDocuments = 0
+		negDocuments = 0
+
+		if word in dfp:
+			wordCount += dfp[word]
+			posDocuments = dfp[word]
+			
+		if word in dfn:
+			wordCount += dfn[word]				
+			negDocuments = dfn[word]
+	
+		positiveEntropy	 = 0
+		if posDocuments != 0:
+			positiveEntropy = (posDocuments/float(wordCount))*log((posDocuments/float(wordCount)),2)
+	
+		negativeEntropy	 = 0
+		if negDocuments!=0:
+			negativeEntopy = (negDocuments/float(wordCount))*log((negDocuments/float(wordCount)),2)
+
+		ig  = currentEntropy - (float(wordCount)/(totalPos+totalNeg))*(-1*positiveEntropy-1*negativeEntopy)
+
+
+		posDocuments = totalPos - posDocuments
+		positiveEntropy	 = 0
+		if posDocuments != 0:
+			positiveEntropy = (posDocuments/float(totalPos+totalNeg-wordCount))*log((posDocuments/float(totalPos+totalNeg-wordCount)),2)
+	
+		negDocuments = totalNeg - negDocuments
+		negativeEntropy	 = 0
+		if negDocuments!=0:
+			negativeEntopy = (negDocuments/float(wordCount))*log((negDocuments/float(wordCount)),2)
+
+		ig  -=  (float(posDocuments+negDocuments)/(totalPos+totalNeg))*(-1*positiveEntropy-1*negativeEntopy)
+
+		if ig in liIg:
+			liIg[ig].append(word)
+		else:
+			liIg[ig] = [word]
+				
+	igs = [a for a in liIg]
+	igs.sort()
+	count =0
+	for ig in igs:
+		count = count+1
+		if count > threshold*len(igs):
+			break
+		else:
+			stopWords.extend(liIg[ig])
+		
+	print "minimum information gain is ", igs[0]
+	print "maximum information gain is ", igs[len(igs)-1]
+	return stopWords
 
 def doPreProcessing(reviews):
 	#we prepend "not" to add the negation information to all words followed by a "not" and before a punctuation.
@@ -191,12 +269,8 @@ def doPreProcessing(reviews):
 	
 	return reviews
 
-	
-def removeStopWordsUsingIG(liPosReviews, liNegReviews):
-	#TODO	
-	return
 					
-def buildDataVectors(ds):
+def buildDataVectors(ds, algo):
 	liPosReviews = []
 	liNegReviews = []
 		
@@ -235,7 +309,7 @@ def buildDataVectors(ds):
 	liNegReviews.extend(trainNegReviews)
 	liNegReviews.extend(testNegReviews)
 	
-	liFeatures = removeStopWords(liPosReviews, liNegReviews)
+	liFeatures = removeStopWords(liPosReviews, liNegReviews, algo)
 
 	#build data vectors...
 	trainVectors = []
@@ -275,7 +349,8 @@ def buildDataVectors(ds):
 	
 def main():
 	#builds the data vectors for both datasets..
-	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Three)	
+	#liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Three, FeatureSelection.DocFrequency)
+	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Two, FeatureSelection.InformationGain)	
 	#print testVectors[0], len(testVectors)
 	#logisticRegression.runLogisticRegression(liFeatures, trainVectors, testVectors)
 	naiveBayes.runNaiveBayes(liFeatures, trainVectors, testVectors)
