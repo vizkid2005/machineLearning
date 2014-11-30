@@ -1,1 +1,1 @@
- scp -r * rahupasu@bigred2.uits.iu.edu:ml/
+ scp *.py *.pbs rahupasu@bigred2.uits.iu.edu:ml/

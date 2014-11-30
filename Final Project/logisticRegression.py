@@ -47,11 +47,12 @@ def handleTestData(samples, w):
 			else:
 				tn+=1
 				
-	print "Total True positives is ",tp
-	print "Total True Negatives is ",tn
-	print "Total False Positives is ",fp
-	print "Total False Negatives is ",fn
-	print "Total Accuracy is ", (float(tp+tn)*100)/(tp + tn + fp + fn), " %"
+	#print "Total True positives is ",tp
+	#print "Total True Negatives is ",tn
+	#print "Total False Positives is ",fp
+	#print "Total False Negatives is ",fn
+	#print "Total Accuracy is ", (float(tp+tn)*100)/(tp + tn + fp + fn), " %"
+	return (float(tp+tn)*100)/(tp + tn + fp + fn)
 
 #w is the weight vector
 #x is the feature vecotor
@@ -127,11 +128,11 @@ def runLogisticRegression(liFeatures, trainVectors, testVectors):
 				weightVectorBackUp[key] = weightVector[key]
 
 	#print weightVector
-	print "Number of Iterations it took for converging "+str(iterations) 
+	#print "Number of Iterations it took for converging "+str(iterations) 
 	
 	#evaluating the test data...
-	print "Evaluating the Test data..."
-	handleTestData(testVectors,weightVector)
+	#print "Evaluating the Test data..."
+	return handleTestData(testVectors,weightVector)
 	
 #Execution begins here
 if __name__ == "__main__" : main()	

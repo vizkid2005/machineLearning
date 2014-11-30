@@ -5,6 +5,7 @@ import re
 import logisticRegression
 import naiveBayes
 from math import log
+import time
 
 class Type():
 	complete = 1
@@ -158,7 +159,7 @@ def removeStopWords(liPosReviews, liNegReviews, algo):
 	elif algo == FeatureSelection.InformationGain:
 		stopWords = getStopWordsUsingIG(dfp, dfn, liPosReviews, liNegReviews)
 				
-	
+	'''
 	print "-"*40
 	print "Stop Words removed are:"
 	print "-"*40	
@@ -167,14 +168,18 @@ def removeStopWords(liPosReviews, liNegReviews, algo):
 		if "NOT" != s[0:3]:
 			tempList.append(s)
 	print tempList				
+	'''
 				
 	finalFeatures = [ a for a in dfp if a not in stopWords]
 	finalFeatures.extend([ a for a in dfn if a not in stopWords])
 			
 	return list(set(finalFeatures))#remove duplicate features.	
 
+
+thresholdIG = 0.1
+
 def getStopWordsUsingIG(dfp, dfn, liPosReviews, liNegReviews):
-	threshold = 0.1
+	global thresholdIG
 	stopWords = []
 	totalWords = [a for a in dfp]
 	totalWords.extend([a for a in dfn])
@@ -230,14 +235,12 @@ def getStopWordsUsingIG(dfp, dfn, liPosReviews, liNegReviews):
 	igs.sort()
 	count =0
 	for ig in igs:
-		count = count+1
-		if count > threshold*len(igs):
+		if count > thresholdIG*len(totalWords):
 			break
 		else:
 			stopWords.extend(liIg[ig])
-		
-	print "minimum information gain is ", igs[0]
-	print "maximum information gain is ", igs[len(igs)-1]
+		count = count+len(liIg[ig])
+				
 	return stopWords
 
 def doPreProcessing(reviews):
@@ -348,10 +351,80 @@ def buildDataVectors(ds, algo):
 	return liFeatures,trainVectors, testVectors						
 	
 def main():
+	global thresholdIG
 	#builds the data vectors for both datasets..
 	#liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Three, FeatureSelection.DocFrequency)
-	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Two, FeatureSelection.InformationGain)	
+	#liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Two, FeatureSelection.InformationGain)	
 	#print testVectors[0], len(testVectors)
 	#logisticRegression.runLogisticRegression(liFeatures, trainVectors, testVectors)
-	naiveBayes.runNaiveBayes(liFeatures, trainVectors, testVectors)
+	
+	numTries = 10
+	logResults = {} #dictionary to a tuple of (runtime in seconds, accuracy)
+	naiveResults = {} 
+	randomResults = {}				
+	liThresholds=[]
+	sum1 = 0
+	for i in range(numTries):
+		liThresholds.append(sum1)
+		sum1 += 0.05 #remove 5% extra terms each time..
+		#print sum1
+		
+	lids = [DataSet.One, DataSet.Two]
+	#lids = [DataSet.Two]
+	liLenFeatures = []
+	for ds in lids:
+		if ds ==  DataSet.One:
+			print "="*40
+			print "Using data set one."
+			print "="*40
+		else:
+			print "="*40
+			print "Using data set two."			
+			print "="*40						
+
+		for k in range(numTries): #total 10 different number of features..			
+			thresholdIG = liThresholds[k]		
+			liFeatures,trainVectors, testVectors = buildDataVectors(ds, FeatureSelection.InformationGain)		
+			liLenFeatures.append(len(liFeatures))
+			lAccuracy = 0
+			#perform logistic regression..
+			start_time = time.time()
+			lAccuracy  = logisticRegression.runLogisticRegression(liFeatures, trainVectors, testVectors)
+			logResults[len(liFeatures)] = (time.time() - start_time, lAccuracy)
+		
+		
+			#perform naive Bayes...
+			start_time = time.time()
+			lAccuracy  = naiveBayes.runNaiveBayes(liFeatures, trainVectors, testVectors)			
+			naiveResults[len(liFeatures)] = (time.time() - start_time, lAccuracy)
+		
+			#perform random forest...
+			#TODO
+	
+		liLenFeatures.sort()
+			
+		print "-"*40
+		print "Printing results with Logistic Regression"
+		print "-"*40
+		print "(numFeatures)\t(accuracy)\t(runTime)"
+		for k in liLenFeatures:
+			print k, "\t", logResults[k][1], "\t", logResults[k][0]
+
+		print "-"*40
+		print "Printing results with Naive Bayes"
+		print "-"*40
+		print "(numFeatures)\t(accuracy)\t(runTime)"
+		for k in liLenFeatures:
+			print k, "\t", naiveResults[k][1], "\t", naiveResults[k][0]
+
+		''' 
+		#commented this as random forests is not yet implemented..
+		print "-"*40
+		print "Printing results with Random Forests."
+		print "-"*40
+		print "(numFeatures)\t(accuracy)\t(runTime)"
+		for k in liLenFeatures:
+			print k, "\t", randomResults[k][1], "\t", randomResults[k][0]
+		'''
+		
 if __name__ == "__main__" : main()	

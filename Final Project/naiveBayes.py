@@ -59,11 +59,13 @@ def handleTestData(testVectors,lProbabilities,fProbabilities, liFeatures):
 			else:
 				tn+=1
 				
-	print "Total True positives is ",tp
-	print "Total True Negatives is ",tn
-	print "Total False Positives is ",fp
-	print "Total False Negatives is ",fn
-	print "Total Accuracy is ", (float(tp+tn)*100)/(tp + tn + fp + fn), " %"
+	#print "Total True positives is ",tp
+	#print "Total True Negatives is ",tn
+	#print "Total False Positives is ",fp
+	#print "Total False Negatives is ",fn
+	#print "Total Accuracy is ", (float(tp+tn)*100)/(tp + tn + fp + fn), " %"
+	return (float(tp+tn)*100)/(tp + tn + fp + fn)
+	
 	
 def runNaiveBayes(liFeatures, trainVectors, testVectors):
 	
@@ -141,7 +143,7 @@ def runNaiveBayes(liFeatures, trainVectors, testVectors):
 		print
 		print "-"*40	
 
-	handleTestData(testVectors, labelProbabilities, featureProbabilities, liFeatures)
+	return handleTestData(testVectors, labelProbabilities, featureProbabilities, liFeatures)
 
 			
 #Execution begins here

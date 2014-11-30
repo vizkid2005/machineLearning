@@ -1,0 +1,9 @@
+#!/bin/bash 
+#PBS -l nodes=2:ppn=32:dc2
+#PBS -l walltime=3:00:00
+#PBS -N rahul_job
+#PBS -q cpu
+#PBS -l gres=ccm
+module load ccm
+ccmrun ./main.py > results.txt
+
