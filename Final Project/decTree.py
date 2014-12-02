@@ -6,21 +6,9 @@ from Node import Node
 import main as main2 
 import cPickle as pickle
 
-# Type, DataSet, FeatureSelection
 '''
-Now you have my permission to change the code.
-'''
-
-'''
-This program knows no difference between a number or a string, It considers everything as a string. (Either a string matches the criteria or it doesn't) 
-This makes it a Binary Tree. Ultimately entropy and informatin gain depends on the probability of a certain value.
-It does not matter what the value is .. 
-I think this will work in most cases .. Lets see ... 
-'''
-
-'''
-The method readData, given a CSV file name, reads the data and returns the data set as a list of lists.
-Each element in the list is a list.
+Require intuition on how to compare the row, which is a list of columns, to dict. 
+See methods, makeVector(row) and shrinkVector(row). 
 '''
 def readData(fileName):
 	data = []
@@ -41,6 +29,7 @@ The method calcEntropy takes a dataset as input and returns its entropy calculat
 the number of occurences of each class label.
 Here is exactly where the use of the method countOccurenceOfClassLabel() comes into play.
 '''
+
 def calcEntropy(subDataSet):
 	classLablelCounts = countOccurenceOfClassLabel(subDataSet)
 	totalRows = len(subDataSet)
@@ -57,7 +46,6 @@ The createTree function is where all the magic happens,
 We call createTree recursively until we reach the required depth or a good decision tree
 The method takes a sub part of the dataset as input and creates a tree based on the decision criteria.
 '''
-
 def createTree(subDataSet, depth=10,threshold=0.0):
 	
 	#Counting the number of rows in the Dataset
@@ -80,7 +68,7 @@ def createTree(subDataSet, depth=10,threshold=0.0):
 		bestColumn = None
 
 		#Lets first count the number of columns, excluding the last column (Ofcourse :p )
-		numberOfColumns = len(makeVector(subDataSet[0],liFeatures))-1
+		numberOfColumns = len(makeVector(subDataSet[0]))-1
 
 		#Now we iterate through each column to see which is the best column to split on
 		for col in range(0,numberOfColumns):
@@ -88,7 +76,7 @@ def createTree(subDataSet, depth=10,threshold=0.0):
 			#We then see which values are present in the column, we will choose one vlalue as criteria to split into 2 datasets
 			valuesInColumn = {}
 			for row in subDataSet:
-				row = makeVector(row,liFeatures)
+				row = makeVector(row)
 				valuesInColumn[row[col]]=1
 			
 			#We are now iterating through each value in the current iteration of column to see which value serves as the best split
@@ -125,7 +113,7 @@ def createTree(subDataSet, depth=10,threshold=0.0):
 			print "No further branching possible "
 			print "Adding leaf values : "+str(valuesInColumn)
 			return Node(leafValues= countOccurenceOfClassLabel(subDataSet))	
-	
+
 	#No further branching possible since depth has become 0, create a node with all the possible leaf values	
 	else : 
 		return Node(leafValues = countOccurenceOfClassLabel(subDataSet))	
@@ -148,7 +136,7 @@ def countOccurenceOfClassLabel(subDataSet):
 	
 	countsOfLabels = {}
 	for row in subDataSet:
-		row = makeVector(row, liFeatures)
+		row = makeVector(row)
 		if row[len(row)-1] in countsOfLabels : 
 			countsOfLabels[row[len(row)-1]] += 1
 		else :
@@ -187,7 +175,7 @@ def classifyNewSample(tree, testData,depth,fileName):
 	predictionsPlusExpectedValues = []
 
 	for row in testData:
-
+		row = makeVector(row)
 		currentNode = tree
 		leaf = None
 		predictedLabel = None
@@ -255,44 +243,29 @@ def classifyNewSample(tree, testData,depth,fileName):
 The method splitData takes a dataset as input and splits it into 2 based on the criteria on the specified column and returns the resulting 2 datasets.
 Provide Column value as if counting from ZERO.
 '''	
-
-def shrinkVector(fullVector, liFeatures):
-	originalVector = []
-	for index, value in enumerate(fullVector[:len(fullVector)-1]):
-		if value == 1:
-			originalVector.append(liFeatures[index])
-
-	if fullVector[len(fullVector)-1] == 1:
-		originalVector.append("POSITIVE")
-	elif fullVector[len(fullVector)-1] == 0:
-		originalVector.append("NEGATIVE")
-
-	print originalVector
-	return originalVector				
-
 def splitData(subDataSet, column, criteria):
 	
 	subDataSet1=[] #All samples that match the criteria
 	subDataSet2=[] #All samples that do not match the criteria
 	for row in subDataSet:
-		row = makeVector(row, liFeatures)
+		row = makeVector(row)
 		#Doing a one vs rest split 
 		if(row[column]==criteria):
-			subDataSet1.append(shrinkVector(row, liFeatures)) 
+			subDataSet1.append(shrinkVector(row)) 
 		else:
-			subDataSet2.append(shrinkVector(row, liFeatures))
+			subDataSet2.append(shrinkVector(row))
 
 	return (subDataSet2,subDataSet1)
 
-def makeVector(trainVector, liFeatures):
+def makeVector(trainVector):
 
 	#Added +1 to accomodate class label, may be wrong
-	lengthOfVector = len(liFeatures)
+	lengthOfVector = len(liFeaturesDict)
 	vector = zeroListMaker(lengthOfVector+1)
 	
 	for word in trainVector:
-		if word in liFeatures:
-			index =  liFeatures.index(word)
+		index = liFeaturesDict.get(word, -1)
+		if index != -1:
 			vector[index] = 1
 
 	if trainVector[len(trainVector)-1] == "POSITIVE":
@@ -302,6 +275,23 @@ def makeVector(trainVector, liFeatures):
 
 	return vector	 			
 
+def shrinkVector(fullVector):
+	originalVector = []
+	for index, featureValue in enumerate(fullVector[:len(fullVector)-1]):
+		if featureValue == 1:
+
+			#I have to iterate over the dictionary
+			for key, value in liFeaturesDict.items():
+				if value == index:
+					originalVector.append(key)
+
+	if fullVector[len(fullVector)-1] == 1:
+		originalVector.append("POSITIVE")
+	elif fullVector[len(fullVector)-1] == 0:
+		originalVector.append("NEGATIVE")
+
+	return originalVector				
+
 def zeroListMaker(lengthOfList):
 	return [0]*lengthOfList
 
@@ -309,34 +299,44 @@ liFeatures = 0
 trainVectors = []
 testVectors = []
 lenLiFeatures = 0
+liFeaturesDict = {}
 
-def runDecTree():
-	ds = 1
+def runDecTree(dataSet, featureSelectionMethod):
 	
+	baseDir=""
+
+	ds = dataSet
+	fs = featureSelectionMethod
+
 	global liFeatures
 	global trainVectors
 	global testVectors
 	global lenLiFeatures
+	global liFeaturesDict
 
 	liFeatures, trainVectors, testVectors = main2.buildDataVectors(ds, main2.FeatureSelection.InformationGain)
-		
-	depth =10
-	threshold = 0.0
+	
+	#Making the liFeatures into a Dictionary.
+	for index, word in enumerate(liFeatures):
+		liFeaturesDict[word] = index
 
-	sampleData = trainVectors[:200]
-	sampleData.extend(trainVectors[1200:1500])
+	depth =1
+	threshold = 0.5
+
+	sampleData = trainVectors[:2]
+	sampleData.extend(trainVectors[1200:1202])
 
 	tree = createTree(sampleData,depth, threshold)
 	printTree(tree)
 
-	pickleFile = open("Tree.pickle","wb")
+	pickleFile = open(baseDir+"Tree.pickle","wb")
 	pickle.dump(tree, pickleFile)
-	pickleFile,close()
-
+	pickleFile.close()
+	
 	'''
 	temp = trainVectors[0]
-	fullVector = makeVector(temp,liFeatures)
-	shrunkVector = shrinkVector(fullVector, liFeatures)
+	fullVector = makeVector(temp,liFeaturesDict)
+	shrunkVector = shrinkVector(fullVector, liFeaturesDict)
 
 	print temp
 	print shrunkVector
@@ -350,135 +350,10 @@ def runDecTree():
 	#print "Entropy is : "+str(entropy)
 	'''
 
-	'''bigTrainVector = []
-	bigTestVector = []
-
-	for vec in trainVectors:
-		sample=[]
-		for i in range(0,len(liFeatures)):
-			sample.append(0)
-		for j in range(0, len(liFeatures)-1):
-			if liFeatures[j] in vec:
-				sample[j] = 1
-			else:
-				sample[j] = 0
-			if vec[len(vec)-1] == "POSITIVE":
-				sample[len(liFeatures)-1] = 1
-			else:
-				sample[len(liFeatures)-1] = 0
-		bigTrainVector.append(sample)
-
-	counter = 0
-	for i in bigTrainVector[0]:
-		if i == 1:
-			counter = counter +1;	
-
-	for vec in testVectors:
-		sample=[]
-		for i in range(0,len(liFeatures)):
-			sample.append(0)
-		for j in range(0, len(liFeatures)-1):
-			if liFeatures[j] in vec:
-				sample[j] = 1
-			else:
-				sample[j] = 0
-			if vec[len(vec)-1] == "POSITIVE":
-				sample[len(liFeatures)-1] = 1
-			else:
-				sample[len(liFeatures)-1] = 0
-		bigTestVector.append(sample)
-
-	counter = 0
-	for i in bigTestVector[0]:
-		if i == 1:
-			counter = counter +1;	
-
-	print bigTrainVector[0]	
-	print trainVectors[0]
-	'''
-	'''
-	counter = 0
-	for i in makeVector(trainVectors[0], liFeatures):
-		if i ==1:
-			counter= counter +1
-
-			
-	print "Number of 1's on makeVector : "+str(counter)		
-	print "Length of train vector : "+str(len(trainVectors[0]))
-	print "Label of train vector : "+ trainVectors[0][len(trainVectors[0])-1]
-	print "Length of makeVector : "+ str(len(makeVector(trainVectors[0], liFeatures)))
-	#print "Num of ones in bigTrainVector[0] : "+str(counter)
-
-	print "Length of liFeatures : "+str(len(liFeatures))
-	print "Total number of Training Samples: "+str(len(trainVectors))
-	'''
-	'''
-	depth = 10
-	threshold = 0.0
-	tree = createTree(bigTrainVector,depth,threshold)
-	printTree(tree)
-	'''
-
-
 #The main function that calls all other functions, execution begins here
 def main():	
 
-	runDecTree()
-	'''
-	#trainingFileName="zoo-train.csv"
-	#testFileName="zoo-test.csv"
-	
-	#Change the trhreshold value if you want to have a minimum information gain at each split, by default we assigned it 0
-	threshold=0.0
-
-	#First we work with the zoo datasets
-	#Gettng test and train data from CSV files
-	trainData = readData(trainingFileName)
-	testData = readData(testFileName)
-
-	for depth in range(0,15):
-		print "Trees for Depth "+str(depth)+" in the Zoo training Data : "
-		#The variable tree will be an instance of the type Node
-		tree = createTree(trainData,depth,threshold)
-		print ""
-		print ""
-		print "Structure of the Tree : "
-		print ""
-		#Printing the tree in a form that helps visualize the structure better
-		printTree(tree)
-		print ""
-
-		#Now that we have the tree built,lets predict output on the test data
-		fileName="results/"+"PredictionOf"+testFileName.split('.')[0]
-		classifyNewSample(tree=tree, testData=testData,depth=depth,fileName=fileName)
-
-	'''	
-	'''
-	#CHANGE THESE FILENAMES IF YOU WANT TO MAKE A TREE WITH YOUR OWN DATA		
-	trainingFileName="foodInspectionTrainPruned.csv"
-	testFileName="foodInspectionTestPruned.csv"
-
-	#Now we work own datasets
-	#Gettng test and train data from CSV files
-	trainData = readData(trainingFileName)
-	testData = readData(testFileName)		
-
-	for depth in range(0,15):
-		print "Trees for Depth "+str(depth)+" in the FoodInspection Training Data : "
-		#The variable tree will be an instance of the type Node
-		tree = createTree(trainData,depth,threshold)
-		print ""
-		print ""
-		print "Structure of the Tree : "
-		print ""
-		#Printing the tree in a form that helps visualize the structure better
-		printTree(tree)
-		print ""
-
-		#Now that we have the tree built,lets predict output on the test data
-		fileName="results/"+"PredictionOf"+testFileName.split('.')[0]
-		classifyNewSample(tree=tree, testData=testData,depth=depth,fileName=fileName)		
-	'''	
+	runDecTree(1,2)	
 		
 #Execution begins here
 if __name__ == "__main__" : main()	
