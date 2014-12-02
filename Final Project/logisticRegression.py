@@ -47,11 +47,11 @@ def handleTestData(samples, w):
 			else:
 				tn+=1
 				
-	#print "Total True positives is ",tp
-	#print "Total True Negatives is ",tn
-	#print "Total False Positives is ",fp
-	#print "Total False Negatives is ",fn
-	#print "Total Accuracy is ", (float(tp+tn)*100)/(tp + tn + fp + fn), " %"
+	print "Total True positives is ",tp
+	print "Total True Negatives is ",tn
+	print "Total False Positives is ",fp
+	print "Total False Negatives is ",fn
+	print "Total Accuracy is ", (float(tp+tn)*100)/(tp + tn + fp + fn), " %"
 	return (float(tp+tn)*100)/(tp + tn + fp + fn)
 
 #w is the weight vector

@@ -16,7 +16,7 @@ class DataSet():
 	One = 1
 	Two = 2
 	Three = 3
-
+	Yelp = 4
 #this dataset has 1000 +ves and 1000-ves.
 #this dataset has verbose reviews..
 def parseDataSetOne(type1):
@@ -240,7 +240,7 @@ def getStopWordsUsingIG(dfp, dfn, liPosReviews, liNegReviews):
 		else:
 			stopWords.extend(liIg[ig])
 		count = count+len(liIg[ig])
-				
+					
 	return stopWords
 
 def doPreProcessing(reviews):
@@ -288,9 +288,12 @@ def buildDataVectors(ds, algo):
 	elif ds == DataSet.Two:
 		trainPosReviews, trainNegReviews = parseDataSetTwo(Type.training)
 		testPosReviews, testNegReviews = parseDataSetTwo(Type.test)
-	else:	
+	elif ds == DataSet.Three:	
 		trainPosReviews, trainNegReviews = parseDataSetThree(Type.training)
 		testPosReviews, testNegReviews = parseDataSetThree(Type.test)	
+	elif ds == DataSet.Yelp:	
+		trainPosReviews, trainNegReviews = parseYelpDataSet(Type.training)
+		testPosReviews, testNegReviews = parseYelpDataSet(Type.test)	
 
 	#remove empty lines..
 	trainPosReviews = [a for a in trainPosReviews if a.isspace() == False]
@@ -350,6 +353,31 @@ def buildDataVectors(ds, algo):
 	
 	return liFeatures,trainVectors, testVectors						
 	
+
+def	parseYelpDataSet(type1):
+	negativeFile = ""
+	positiveFile = ""	
+	
+	if type1 == Type.training:
+		negativeFile = "training/yelp/posFile.txt"
+		positiveFile = "training/yelp/negFile.txt"	
+	else:
+		negativeFile = "test/yelp/posFile.txt"
+		positiveFile = "test/yelp/negFile.txt"		
+	
+	fil = open(positiveFile, "r")
+	liPosReviews = [ a.lower() for a in fil.readlines()]#features are case-insensitive	
+		
+	fil = open(negativeFile, "r")
+	liNegReviews = [a.lower() for a in fil.readlines()] #features are case-insensitive
+	
+	return (liPosReviews, liNegReviews)
+	
+def handleYelpDataset():
+	liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Yelp, FeatureSelection.InformationGain)
+	print "running log reg now.."
+	logisticRegression.runLogisticRegression(liFeatures, trainVectors, testVectors)
+	
 def main():
 	global thresholdIG
 	#builds the data vectors for both datasets..
@@ -357,6 +385,8 @@ def main():
 	#liFeatures,trainVectors, testVectors = buildDataVectors(DataSet.Two, FeatureSelection.InformationGain)	
 	#print testVectors[0], len(testVectors)
 	#logisticRegression.runLogisticRegression(liFeatures, trainVectors, testVectors)
+	handleYelpDataset()
+	exit()
 	
 	numTries = 10
 	logResults = {} #dictionary to a tuple of (runtime in seconds, accuracy)
@@ -369,8 +399,8 @@ def main():
 		sum1 += 0.05 #remove 5% extra terms each time..
 		#print sum1
 		
-	lids = [DataSet.One, DataSet.Two]
-	#lids = [DataSet.Two]
+	#lids = [DataSet.One, DataSet.Two]
+	lids = [DataSet.Two]
 	liLenFeatures = []
 	for ds in lids:
 		if ds ==  DataSet.One:
