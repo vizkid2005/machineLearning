@@ -1,1 +1,4 @@
 *.pyc
+*.sh
+*.br2
+*.pickle
