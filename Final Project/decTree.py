@@ -7,34 +7,21 @@ import main as main2
 import cPickle as pickle
 
 '''
-Require intuition on how to compare the row, which is a list of columns, to dict. 
-See methods, makeVector(row) and shrinkVector(row). 
-'''
-def readData(fileName):
-	data = []
-	myFile = open(fileName, 'rt')
-	try:
-		reader = csv.reader(myFile)
-		for row in reader:
-			data.append(row)
-	except:
-		print "Error opening File: "+fileName
-		exit()
-	finally:
-		myFile.close()
-	return data	
-
-'''
 The method calcEntropy takes a dataset as input and returns its entropy calculated on the basis of 
 the number of occurences of each class label.
 Here is exactly where the use of the method countOccurenceOfClassLabel() comes into play.
 '''
 
+#Works
 def calcEntropy(subDataSet):
 	classLablelCounts = countOccurenceOfClassLabel(subDataSet)
 	totalRows = len(subDataSet)
+	#print "For length of dataset : "+str(totalRows)
+	#print classLablelCounts
 	entropy = 0.0
 
+	#I think, I need to handle the case where there is just one class Label,
+	#For eg, just 1 NEGATIVE Sample out of 1600
 	for key in classLablelCounts:
 		p = float(classLablelCounts[key])/totalRows
 		entropy -= p*log(p,2)
@@ -56,6 +43,7 @@ def createTree(subDataSet, depth=10,threshold=0.0):
 	#if the required depth is > 0 and the dataset has some rows 
 	if depth > 0 and len(subDataSet) > 0:
 		
+		#countDict = calcCountDict(subDataSet)
 		print "Current Depth : "+str(depth)
 		print ""
 		#We first calculate the entropy for the entire data set
@@ -67,39 +55,26 @@ def createTree(subDataSet, depth=10,threshold=0.0):
 		bestCriteria = None
 		bestColumn = None
 
-		#Lets first count the number of columns, excluding the last column (Ofcourse :p )
-		numberOfColumns = len(makeVector(subDataSet[0]))-1
-
 		#Now we iterate through each column to see which is the best column to split on
-		for col in range(0,numberOfColumns):
+		for col in liFeatures:
+			#Split the dataset on the current value of column and value
+			(set1,set2) = splitData(subDataSet,col)
 
-			#We then see which values are present in the column, we will choose one vlalue as criteria to split into 2 datasets
-			valuesInColumn = {}
-			for row in subDataSet:
-				row = makeVector(row)
-				valuesInColumn[row[col]]=1
+			#Calculate infoGain for each col and each value in the column
+			#MajorChange
+			infoGain = calcInfoGain(entropy, set1, set2)
 			
-			#We are now iterating through each value in the current iteration of column to see which value serves as the best split
-			for value in valuesInColumn:
-
-				#Split the dataset on the current value of column and value
-				(set1,set2) = splitData(subDataSet,col, value)
-
-				#Calculate infoGain for each col and each value in the column
-				infoGain = calcInfoGain(entropy, set1,set2)
-				
-				#Choose the best col and value 
-				if infoGain > bestGain and len(set1) > 0 and len(set2) > 0 :
-					bestGain = infoGain
-					bestSet = (set1, set2)
-					bestCriteria = value
-					bestColumn = col
+			#Choose the best col and value 
+			if infoGain > bestGain and len(set1) > 0 and len(set2) > 0 :
+				bestGain = infoGain
+				bestSet = (set1, set2)
+				bestCriteria = 1
+				bestColumn = col
 		
 		#Finally split the dataset and create the subtree based on the best values obtained above
-		print "Splitting on Column : "+str(bestColumn)+" with criteria : "+str(bestCriteria)
+		print "Splitting on Column : "+str(bestColumn)
 		print "Best values : "
 		print "Best Gain : "+str(bestGain)
-		print "Best Criteria : "+str(bestCriteria)
 		print "Best Column : "+str(bestColumn)
 		print ""
 
@@ -111,7 +86,7 @@ def createTree(subDataSet, depth=10,threshold=0.0):
 		else:
 			print ""
 			print "No further branching possible "
-			print "Adding leaf values : "+str(valuesInColumn)
+			print "Adding leaf values"
 			return Node(leafValues= countOccurenceOfClassLabel(subDataSet))	
 
 	#No further branching possible since depth has become 0, create a node with all the possible leaf values	
@@ -122,6 +97,7 @@ def createTree(subDataSet, depth=10,threshold=0.0):
 The method calcInfoGain returns the Information Gain when passed with the current value of entropy, and dataset split on a particular value of a particular column.
 This used to find which is the best column to split the dataset on and subsequently decide what should the criteria be. 
 '''
+#Haven't checked
 def calcInfoGain(currentEntropy, subDataSet1,subDataSet2):
 	p = float(len(subDataSet1))/(len(subDataSet1)+len(subDataSet2))
 	infoGain = currentEntropy - p*calcEntropy(subDataSet1) - (1-p)*calcEntropy(subDataSet2)
@@ -132,21 +108,25 @@ The method countOccurenceOfClassLabel is called whenever we need to count how ma
 This will be used to calculate Entropy and Infogain
 It returns a dictionary that has keys as the class label and the values as the number of Occurences of that class label
 '''	
-def countOccurenceOfClassLabel(subDataSet):
-	
+
+#Works
+def countOccurenceOfClassLabel(subDataSet):	
 	countsOfLabels = {}
 	for row in subDataSet:
-		row = makeVector(row)
-		if row[len(row)-1] in countsOfLabels : 
-			countsOfLabels[row[len(row)-1]] += 1
-		else :
-			countsOfLabels[row[len(row)-1]] = 1
+		if not row:
+			continue		
+		else:
+			if row[len(row)-1] in countsOfLabels : 
+				countsOfLabels[row[len(row)-1]] += 1
+			else :
+				countsOfLabels[row[len(row)-1]] = 1
 	return countsOfLabels			
 
 '''
 The method printTree takes a tree of the type Node and an indent value. It outputs the tree in a human interpretable form 
 by showing subsequent branches with indents. 
 '''	
+
 def printTree(tree, indent=''):
 	if tree.leafValues != None:
 		print "Leaf Node : "+str(tree.leafValues)
@@ -156,7 +136,6 @@ def printTree(tree, indent=''):
 		printTree(tree.leftBranch,indent="     "+indent)
 		print indent+"Right Branch -> ",
 		printTree(tree.rightBranch,indent="     "+indent)
-
 '''
 The method write result will write the result of the classifier and the expected result in a CSV format.
 '''
@@ -165,17 +144,16 @@ def writeResult(predictionsPlusExpectedValues,depth="",fileName="predictionsWith
 		csvWriter = csv.writer(f)
 		for row in predictionsPlusExpectedValues:
 			csvWriter.writerow(row)
-		f.close()	
+		f.close()
 
 '''
 Given a tree and a dataset, the method classifyNewSample will output the predicted classification of each row in the dataset.
 '''
-def classifyNewSample(tree, testData,depth,fileName):	
+def classifyNewSample(tree, testData,depth):	
 	
 	predictionsPlusExpectedValues = []
 
 	for row in testData:
-		row = makeVector(row)
 		currentNode = tree
 		leaf = None
 		predictedLabel = None
@@ -185,9 +163,9 @@ def classifyNewSample(tree, testData,depth,fileName):
 		if(depth == 0):
 			leaf = tree.leafValues
 		else:	
-			#Recursively searching for the leaf node that martches the criteria
+			#Recursively searching for the leaf node that matches the criteria
 			while(leaf == None):
-				if row[currentNode.col] == currentNode.criteria: 
+				if currentNode.col in row: 
 					currentNode = currentNode.rightBranch
 				else:
 					currentNode = currentNode.leftBranch				
@@ -237,63 +215,75 @@ def classifyNewSample(tree, testData,depth,fileName):
 		#List of lists containing the prediction vs expected values
 		predictionsPlusExpectedValues.append(currentPredictionPlusExpectedValues)
 
-	writeResult(predictionsPlusExpectedValues=predictionsPlusExpectedValues,depth=depth,fileName=fileName)
+	return predictionsPlusExpectedValues	
+	#writeResult(predictionsPlusExpectedValues=predictionsPlusExpectedValues,depth=depth,fileName=fileName)
 
 '''
 The method splitData takes a dataset as input and splits it into 2 based on the criteria on the specified column and returns the resulting 2 datasets.
 Provide Column value as if counting from ZERO.
 '''	
-def splitData(subDataSet, column, criteria):
+#Works
+def splitData(subDataSet, column):
 	
 	subDataSet1=[] #All samples that match the criteria
 	subDataSet2=[] #All samples that do not match the criteria
 	for row in subDataSet:
-		row = makeVector(row)
+		#row = makeVector(row)
 		#Doing a one vs rest split 
-		if(row[column]==criteria):
-			subDataSet1.append(shrinkVector(row)) 
+		if column in row:
+			subDataSet1.append(row) 
 		else:
-			subDataSet2.append(shrinkVector(row))
+			subDataSet2.append(row)
 
 	return (subDataSet2,subDataSet1)
 
-def makeVector(trainVector):
+def TPTNRates(results):
+	tp = tn =0
+	fp = fn = 0
+	for result in results:
+		if result[0] == result[1] and result[0] == "POSITIVE":
+			tp = tp +1
+		elif result[0] == "POSITIVE" and result[1] == "NEGATIVE":
+			fp = fp +1
+		elif result[0] == "NEGATIVE" and result[1] == "POSITIVE":
+			fn = fn +1
+		elif result[0] == result[1] and result[0] == "NEGATIVE":
+			tn = tn +1
 
-	#Added +1 to accomodate class label, may be wrong
-	lengthOfVector = len(liFeaturesDict)
-	vector = zeroListMaker(lengthOfVector+1)
-	
-	for word in trainVector:
-		index = liFeaturesDict.get(word, -1)
-		if index != -1:
-			vector[index] = 1
+	return (tp, tn, fp, fn)		
 
-	if trainVector[len(trainVector)-1] == "POSITIVE":
-		vector[lengthOfVector] = 1
-	elif trainVector[len(trainVector)-1] == "NEGATIVE":
-		vector[lengthOfVector] = 0
+#Is Accuracy enough of an evaluation measure ?
+def resultsToAccuracy(results):
+	totalSamples = len(results)
 
-	return vector	 			
-
-def shrinkVector(fullVector):
-	originalVector = []
-	for index, featureValue in enumerate(fullVector[:len(fullVector)-1]):
-		if featureValue == 1:
-
-			#I have to iterate over the dictionary
-			for key, value in liFeaturesDict.items():
-				if value == index:
-					originalVector.append(key)
-
-	if fullVector[len(fullVector)-1] == 1:
-		originalVector.append("POSITIVE")
-	elif fullVector[len(fullVector)-1] == 0:
-		originalVector.append("NEGATIVE")
-
-	return originalVector				
-
-def zeroListMaker(lengthOfList):
-	return [0]*lengthOfList
+	counter = 0
+	for result in results:
+		if result[0] == result[1]:
+			counter = counter + 1
+				
+	return float(counter)/totalSamples		 
+#I did not see the reason to use this	
+def calcCountDict(subDataSet):
+	countDict = {}
+	for vec in subDataSet:
+		for word in vec:
+			if word !="POSITIVE" or word !="NEGATIVE":
+				if countDict.get(word, -1) != -1:
+					p, q = countDict.get(word)
+					if vec[len(vec)-1] == "POSITIVE":
+						p = p+1
+					elif vec[len(vec)-1] == "NEGATIVE":
+						q = q+1
+					countDict[word] = (p, q)
+				else:
+					p = 0
+					q = 0
+					if vec[len(vec)-1] == "POSITIVE":
+						p = p+1
+					elif vec[len(vec)-1] == "NEGATIVE":
+						q = q+1
+ 					countDict[word] = (p, q)
+ 	return countDict				
 
 liFeatures = 0
 trainVectors = []
@@ -316,12 +306,49 @@ def runDecTree(dataSet, featureSelectionMethod):
 
 	liFeatures, trainVectors, testVectors = main2.buildDataVectors(ds, main2.FeatureSelection.InformationGain)
 	
+	depthAccuracyTPTN = []
+
+	for d in range(0,10):
+		tree = createTree(trainVectors,depth = d)
+		results = classifyNewSample(tree, testVectors[:20], depth = d)
+		accuracy = resultsToAccuracy(results)
+		tptnRates = TPTNRates(results)
+		depthAccuracyTPTN.append((d, accuracy, tptnRates))
+	print ""
+	print ""
+	print ""
+	print "Depth\t Accuracy\t TP\t TN\t FP\t FN"
+	for row in depthAccuracyTPTN:
+		print str(row[0])+"\t "+str(row[1])+"\t "+str(row[2][0])+"\t "+str(row[2][1])+"\t "+str(row[2][2])+"\t "+str(row[2][3])
+
+			 
+
+	'''
+	print countOccurenceOfClassLabel(trainVectors)
+	print calcEntropy(trainVectors)
+	temp = liFeatures[53]
+	subDataSet1, subDataSet2 = splitData(trainVectors, temp)
+	
+	print "Len of subdataset1"
+	print str(len(subDataSet1))
+	print "Len of subDataSet2 "
+	print str(len(subDataSet2))
+
+	print "Entropy of subdataset 1 : "
+	print calcEntropy(subDataSet1)
+	print "Entropy of subDataSet1 2 : "
+	print calcEntropy(subDataSet2)
+	'''
+
+	'''	
 	#Making the liFeatures into a Dictionary.
 	for index, word in enumerate(liFeatures):
 		liFeaturesDict[word] = index
 
 	depth =1
 	threshold = 0.5
+
+	calcCountDict()
 
 	sampleData = trainVectors[:2]
 	sampleData.extend(trainVectors[1200:1202])
@@ -334,22 +361,6 @@ def runDecTree(dataSet, featureSelectionMethod):
 	pickleFile.close()
 	
 	'''
-	temp = trainVectors[0]
-	fullVector = makeVector(temp,liFeaturesDict)
-	shrunkVector = shrinkVector(fullVector, liFeaturesDict)
-
-	print temp
-	print shrunkVector
-
-	if set(temp) == set(shrunkVector):
-		print "Both are equal"
-	lenLiFeatures = len(liFeatures)
-	#tree = createTree(trainVectors,depth,threshold)
-
-	#entropy = calcEntropy(trainVectors[:200])
-	#print "Entropy is : "+str(entropy)
-	'''
-
 #The main function that calls all other functions, execution begins here
 def main():	
 
