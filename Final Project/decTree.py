@@ -5,7 +5,7 @@ from math import log
 from Node import Node
 import main as main2 
 import cPickle as pickle
-
+import time
 '''
 The method calcEntropy takes a dataset as input and returns its entropy calculated on the basis of 
 the number of occurences of each class label.
@@ -293,6 +293,7 @@ liFeaturesDict = {}
 
 def runDecTree(dataSet, featureSelectionMethod):
 	
+	startTime = time.time()
 	baseDir=""
 
 	ds = dataSet
@@ -308,7 +309,7 @@ def runDecTree(dataSet, featureSelectionMethod):
 	
 	depthAccuracyTPTN = []
 
-	for d in range(0,10):
+	for d in range(0,1):
 		tree = createTree(trainVectors,depth = d)
 		results = classifyNewSample(tree, testVectors[:20], depth = d)
 		accuracy = resultsToAccuracy(results)
@@ -321,7 +322,8 @@ def runDecTree(dataSet, featureSelectionMethod):
 	for row in depthAccuracyTPTN:
 		print str(row[0])+"\t "+str(row[1])+"\t "+str(row[2][0])+"\t "+str(row[2][1])+"\t "+str(row[2][2])+"\t "+str(row[2][3])
 
-			 
+	totalTime = time.time() - startTime
+	print "Total Runtime = "+str(totalTime)		 
 
 	'''
 	print countOccurenceOfClassLabel(trainVectors)
