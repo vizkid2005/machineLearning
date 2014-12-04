@@ -2,3 +2,5 @@
 *.sh
 *.br2
 *.pickle
+*.output
+*.op
