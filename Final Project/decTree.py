@@ -6,6 +6,8 @@ from Node import Node
 import main as main2 
 import cPickle as pickle
 import time
+import random 
+
 '''
 The method calcEntropy takes a dataset as input and returns its entropy calculated on the basis of 
 the number of occurences of each class label.
@@ -291,10 +293,44 @@ testVectors = []
 lenLiFeatures = 0
 liFeaturesDict = {}
 
+def createBag(trainVectors):
+	baggedSet = []
+	for i in range(0, len(trainVectors)):
+		index = random.randrange(0,len(trainVectors), 1)
+		baggedSet.append(trainVectors[index])
+
+	return baggedSet
+
+def baggedDecTree(depth, dataSet):
+	startTime = time.time()
+	baseDir="/N/u/hydargah/BigRed2/ml/"
+
+	global liFeatures
+	global trainVectors
+	global testVectors
+	global lenLiFeatures
+	global liFeaturesDict
+
+	dataSet = int(dataSet)
+	liFeatures, trainVectors, testVectors = main2.buildDataVectors(dataSet, main2.FeatureSelection.InformationGain)
+
+	baggedTrainVectors = createBag(trainVectors)
+	tree = createTree(baggedTrainVectors,depth)
+
+	#This directory will store all the bagged 
+	bagTreeDir = baseDir+"baggedTrees/"
+	outputFile = open(baseDir+"baggedTrees.op","a")
+	randomNumber = random.randrange(0,50,1)
+	treePickleFile = open(bagTreeDir+str(randomNumber)+"-"+str(dataSet)+"Tree"+str(depth)+".pickle","wb")
+	pickle.dump(tree, treePickleFile)
+	treePickleFile.close()
+	outputFile.write("Tree with depth "+str(depth)+" written in time "+str(time.time()-startTime)+"\n")
+	outputFile.close()
+
 def runDecTree(dataSet, featureSelectionMethod):
 	
 	startTime = time.time()
-	baseDir=""
+	baseDir="/N/u/hydargah/BigRed2/ml/"
 
 	ds = dataSet
 	fs = featureSelectionMethod
@@ -366,7 +402,9 @@ def runDecTree(dataSet, featureSelectionMethod):
 #The main function that calls all other functions, execution begins here
 def main():	
 
-	runDecTree(1,2)	
+	depth = int(sys.argv[1])
+	dataSet = int(sys.argv[2])
+	baggedDecTree(depth, dataSet)	
 		
 #Execution begins here
 if __name__ == "__main__" : main()	
