@@ -1,0 +1,63 @@
+--------------------------
+Logistic regression
+--------------------------
+
+Number of features is  9589
+Accuracy is  50.0
+running time is  0.0774750709534
+
+Number of features is  15610
+Accuracy is  54.73289597
+running time is  0.227285146713
+
+Number of features is  16645
+Accuracy is  58.106841612
+running time is  0.421222925186
+
+Number of features is  17679
+Accuracy is  62.2774133083
+running time is  0.948182821274
+
+Number of features is  18668
+Accuracy is  67.9475164011
+running time is  1.09120893478
+
+Number of features is  19653
+Accuracy is  75.3045923149
+running time is  40.2825648785
+
+--------------------------
+Naive Bayes
+--------------------------
+
+Number of features is  9589
+Accuracy is  52.6241799438
+running time is  25.9781830311
+
+Number of features is  15610
+Accuracy is  57.8256794752
+running time is  44.8836860657
+
+Number of features is  16645
+Accuracy is  61.1059044049
+running time is  51.761868
+
+Number of features is  17679
+Accuracy is  64.7610121837
+running time is  54.6269958019
+
+Number of features is  18668
+Accuracy is  70.1499531396
+running time is  63.7645149231
+
+Number of features is  19653
+Accuracy is  77.8819119025
+running time is  79.3527560234
+
+
+
+
+
+
+
+
